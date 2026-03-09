@@ -8,8 +8,8 @@ export default function Contact() {
       <div className="mx-auto max-w-6xl">
         <SectionTitle
           eyebrow="Contact"
-          title="Let’s talk about opportunities and real product work."
-          description="I’m open to software engineering roles where I can contribute to real applications, collaborate with product teams, and continue growing as a developer."
+          title="Open to full-stack developer opportunities."
+          description="I’m currently looking for full-stack developer roles where I can contribute to real products, build complete application features, and continue growing through hands-on engineering work."
         />
 
         <motion.div
@@ -20,9 +20,12 @@ export default function Contact() {
           className="mt-10 rounded-3xl border border-slate-800 bg-slate-900 p-8"
         >
           <p className="max-w-2xl text-slate-300 leading-7">
-            The best way to reach me is by email or LinkedIn. I’m happy to talk
-            about frontend roles, full-stack opportunities, or teams building
-            modern web products.
+            <p className="max-w-2xl text-slate-300 leading-7">
+              The best way to reach me is by email or LinkedIn. I’m open to
+              full-stack developer opportunities involving modern web
+              applications, backend APIs, database-driven systems, and
+              product-focused engineering work.
+            </p>
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">

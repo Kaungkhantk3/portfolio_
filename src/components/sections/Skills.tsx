@@ -11,25 +11,30 @@ export default function Skills() {
       <div className="mx-auto max-w-6xl">
         <SectionTitle
           eyebrow="Skills"
-          title="Technologies I use to build modern applications."
-          description="A practical stack centered around frontend engineering, full-stack development, and product-focused implementation."
+          title="Technologies I use to build complete web applications."
+          description="My stack focuses on frontend development, backend APIs, database systems, and modern development tooling."
         />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-10 flex flex-wrap gap-3"
+          className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
         >
-          {skills.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-200 transition hover:border-sky-400 hover:text-white"
-            >
-              {skill}
-            </span>
-          ))}
+          {skills.map((skill) => {
+            const Icon = skill.icon;
+
+            return (
+              <div
+                key={skill.name}
+                className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 transition hover:border-sky-500 hover:bg-slate-900"
+              >
+                <Icon className="text-xl text-sky-400" />
+                <span className="text-sm text-slate-200">{skill.name}</span>
+              </div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

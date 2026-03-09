@@ -5,18 +5,28 @@ import About from "../components/sections/About";
 import Skills from "../components/sections/Skills";
 import FeaturedProjects from "../components/sections/FeaturedProjects";
 import Contact from "../components/sections/Contact";
+import Experience from "../components/sections/Experience";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="relative min-h-screen bg-slate-950 bg-grid text-slate-100">
+      {/* glow background */}
+      <div className="bg-glow pointer-events-none"></div>
+
+      {/* noise texture */}
+      <div className="bg-noise pointer-events-none"></div>
+
       <Navbar />
-      <main>
+
+      <main className="relative z-10">
         <Hero />
         <About />
         <Skills />
         <FeaturedProjects />
+        <Experience />
         <Contact />
       </main>
+
       <Footer />
     </div>
   );
