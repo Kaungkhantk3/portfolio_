@@ -1,36 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+
 @import "tailwindcss";
 
-/* subtle developer grid */
-.bg-grid {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+/* ─────────────────────────────────────────
+   Design tokens  (replaces tailwind.config)
+───────────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Brand colors */
+  --color-base:          #060612;
+  --color-accent:        #818cf8;
+  --color-accent-bright: #a5b4fc;
+  --color-accent-dim:    rgba(129, 140, 248, 0.15);
+  --color-accent-purple: #c084fc;
+  --color-accent-cyan:   #67e8f9;
+
+  /* Glass surface colors */
+  --color-glass-bg:           rgba(255, 255, 255, 0.04);
+  --color-glass-bg-hover:     rgba(255, 255, 255, 0.07);
+  --color-glass-border:       rgba(255, 255, 255, 0.08);
+  --color-glass-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Border radius */
+  --radius-2xl: 18px;
+  --radius-3xl: 26px;
+  --radius-4xl: 36px;
+
+  /* Gradient shorthands */
+  --gradient-accent: linear-gradient(135deg, #a5b4fc 0%, #c084fc 50%, #67e8f9 100%);
+  --gradient-btn:    linear-gradient(135deg, #6366f1, #8b5cf6);
+
+  /* Animations */
+  --animate-blob-drift: blob-drift 22s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+
+  @keyframes blob-drift {
+    0%, 100% { transform: translate(0, 0)        scale(1);    }
+    33%       { transform: translate(28px, -38px)  scale(1.05); }
+    66%       { transform: translate(-18px, 22px)  scale(0.97); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1;   box-shadow: 0 0 6px  rgba(52, 211, 153, 0.6); }
+    50%       { opacity: 0.7; box-shadow: 0 0 14px rgba(52, 211, 153, 0.9); }
+  }
 }
 
-/* radial glow */
-.bg-glow {
-  position: absolute;
+/* ─────────────────────────────────────────
+   Base styles
+───────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: #e2e0f0;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+  ::-webkit-scrollbar             { width: 5px; }
+  ::-webkit-scrollbar-track       { background: transparent; }
+  ::-webkit-scrollbar-thumb       { background: rgba(129, 140, 248, 0.25); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(129, 140, 248, 0.45); }
+}
+
+/* ─────────────────────────────────────────
+   Reusable utility classes
+───────────────────────────────────────── */
+@layer utilities {
+
+  /* Glass surfaces */
+  .glass {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .glass-heavy {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(36px);
+    -webkit-backdrop-filter: blur(36px);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Accent divider line */
+  .accent-line {
+    width: 32px;
+    height: 2px;
+    background: linear-gradient(90deg, #818cf8, #c084fc);
+    border-radius: 2px;
+  }
+
+  /* Eyebrow label */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent-bright);
+    margin-bottom: 14px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--color-accent);
+    display: block;
+  }
+
+  /* Top-edge shimmer on cards */
+  .card-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.4), transparent);
+    pointer-events: none;
+  }
+
+  /* Pulsing availability dot */
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    animation: var(--animate-pulse-glow);
+    flex-shrink: 0;
+  }
+
+  /* Font family helpers */
+  .font-display { font-family: var(--font-display); }
+  .font-body    { font-family: var(--font-body); }
+}
+
+/* ─────────────────────────────────────────
+   Ambient background blobs
+───────────────────────────────────────── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  animation: var(--animate-blob-drift);
+}
+
+.blob-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.32), transparent 70%);
+  top: -120px; left: -150px;
+  animation-duration: 22s;
+}
+
+.blob-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.22), transparent 70%);
+  top: 35%; right: -120px;
+  animation-duration: 28s;
+  animation-delay: -8s;
+}
+
+.blob-3 {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(103, 232, 249, 0.16), transparent 70%);
+  bottom: 5%; left: 15%;
+  animation-duration: 24s;
+  animation-delay: -4s;
+}
+
+.blob-4 {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.18), transparent 70%);
+  top: 62%; right: 28%;
+  animation-duration: 30s;
+  animation-delay: -14s;
+}
+
+/* ─────────────────────────────────────────
+   Noise grain overlay
+───────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
   inset: 0;
-  overflow: hidden;
-}
-
-.bg-glow::before {
-  content: "";
-  position: absolute;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 60%);
-  filter: blur(120px);
-}
-
-/* noise texture */
-.bg-noise {
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 1;
 }
