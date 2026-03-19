@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 const stats = [
   { num: "15+", label: "API endpoints built" },
   { num: "10+", label: "UI components shipped" },
-  { num: "3", label: "Full-stack projects" },
-  { num: "2y+", label: "Teaching experience" },
+  { num: "3+", label: "Full-stack projects" },
+  { num: "2y+", label: "Teaching assistant experience" },
 ];
 
 export default function Hero() {
