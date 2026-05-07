@@ -214,7 +214,7 @@ export default function GlobeCanvas() {
     /* ── Drag rotation ── */
     let isDragging = false;
     let prevMouse = { x: 0, y: 0 };
-    let rotVel = { x: 0, y: 0 };
+    const rotVel = { x: 0, y: 0 };
 
     const onMouseDown = (e: MouseEvent) => {
       isDragging = true;
