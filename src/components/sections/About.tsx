@@ -50,7 +50,7 @@ export default function About() {
             <br />
             practical web applications.
           </h2>
-          <p className="mb-12 max-w-[520px] text-[15px] leading-[1.75] text-white/55">
+          <p className="mb-12 max-w-130 text-[15px] leading-[1.75] text-white/55">
             Focused on building complete systems from frontend interfaces to
             backend APIs and relational database architecture.
           </p>

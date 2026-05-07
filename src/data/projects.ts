@@ -7,53 +7,75 @@ export type Project = {
   github?: string;
   live?: string;
   featured?: boolean;
+  // Single image for card cover (secondary + other cards)
+  image?: string;
+  // Multiple images for hero carousel
+  images?: string[];
 };
 
 export const projects: Project[] = [
+  // ─── Featured (internship + senior) ───────────────────────────────────────
+
   {
-    title: "Valentine Card Creation Web Application",
-    subtitle: "Internship Project",
+    title: "Valentine Card Creator",
+    subtitle: "Internship Project · MFessolutions Co., Ltd",
     description:
-      "Built a full-stack web application that lets users create customizable Valentine’s Day cards with photo uploads, dynamic shape masking, text styling, and image export.",
+      "Full-stack web application for creating customizable Valentine cards with photo uploads, SVG/Canvas masking, interactive unlock animations, and shareable unique links.",
     stack: [
       "React",
       "TypeScript",
       "Node.js",
       "Express",
       "MySQL",
-      "Prisma",
+      "Prisma ORM",
       "Docker",
     ],
     highlights: [
-      "Designed and implemented RESTful APIs for card creation, retrieval, and editing",
-      "Built dynamic UI rendering with SVG and Canvas-based image masking",
-      "Implemented image upload handling and export-to-image functionality",
-      "Designed relational database schema using Prisma ORM and MySQL",
-      "Structured backend architecture with Express and modular routing",
+      "Designed RESTful APIs for card creation, retrieval, editing, and sharing",
+      "Built SVG/Canvas-based image masking with photo upload, resize, rotation, and shape selection",
+      "Implemented shareable unique links and interactive unlock animations (drag-and-drop, scratch-to-reveal)",
+      "Designed relational database schema with Prisma ORM and MySQL; containerized with Docker Compose",
     ],
     github: "https://github.com/Kaungkhantk3",
     featured: true,
+    images: [
+      "/images/valentine-1.png",
+      "/images/valentine-2.png",
+      "/images/valentine-3.png",
+    ],
   },
+
   {
     title: "Admin Dashboard & Management System",
-    subtitle: "Internship Project",
+    subtitle: "Internship Project · MFessolutions Co., Ltd",
     description:
-      "Contributed to an internal admin panel for managing users, content, and system activity with authentication, role control, and dashboard analytics.",
-    stack: ["React", "JavaScript", "Node.js", "Express", "MySQL", "JWT"],
+      "Internal admin panel for managing restaurants, user accounts, and media uploads with multi-role access control, analytics, and multilingual support.",
+    stack: [
+      "React",
+      "Node.js",
+      "Express",
+      "MySQL",
+      "JWT",
+      "Tailwind CSS",
+      "Multer",
+      "i18next",
+    ],
     highlights: [
-      "Implemented authentication using JWT",
-      "Built role-based access control for Admin and User roles",
-      "Developed dashboard UI for system statistics and analytics",
-      "Collaborated with senior developer on feature architecture and code improvements",
+      "Built RBAC for Super Admin, Admin, Editor, and Viewer roles using JWT",
+      "Developed dashboard UI with system statistics, recent activity, and restaurant/project management",
+      "Implemented image upload and management (Multer) for logos and banners",
+      "Added multi-language support (Thai/English) with i18next",
     ],
     github: "https://github.com/Kaungkhantk3",
     featured: true,
+    image: "/images/admin-dashboard.png",
   },
+
   {
-    title: "RentMate",
-    subtitle: "Senior Project",
+    title: "RentMate — P2P Rental Marketplace",
+    subtitle: "Senior Project · Mae Fah Luang University",
     description:
-      "Developed a full-stack peer-to-peer rental marketplace for camping equipment with a complete rental and payment workflow system.",
+      "Full-stack peer-to-peer rental marketplace for camping equipment with a complete multi-step rental workflow, real-time chat, and admin panel.",
     stack: [
       "Node.js",
       "Express",
@@ -64,27 +86,85 @@ export const projects: Project[] = [
       "JavaScript",
     ],
     highlights: [
-      "Designed and implemented RESTful APIs for users, items, rentals, payments, reviews, chat, and notifications",
-      "Built JWT-based authentication and role-based access control",
-      "Implemented secure password hashing using bcrypt",
-      "Developed a multi-step rental workflow from request to refund and completion",
-      "Built real-time chat between borrowers and lenders",
-      "Developed admin panel for user, item, payment, and rental monitoring",
+      "Designed RESTful APIs for users, items, rentals, payments, reviews, chat, and notifications",
+      "Multi-step workflow: request → payment → approval → transfer → return → refund → completion",
+      "Implemented secure JWT authentication, bcrypt hashing, and admin/user role separation",
+      "Built real-time chat system between borrowers and lenders with admin platform management",
     ],
     github: "https://github.com/Kaungkhantk3",
     featured: true,
+    image: "/images/rentmate.png",
   },
+
+  // ─── Other internship projects ────────────────────────────────────────────
+
+  {
+    title: "Bangkok Centers Directory",
+    subtitle: "Internship Project · MFessolutions Co., Ltd",
+    description:
+      "Bilingual directory platform for Bangkok's sport, recreation, library, and youth centers with search, pagination, and Google Sheets API integration.",
+    stack: [
+      "React",
+      "TypeScript",
+      "Node.js",
+      "Express",
+      "Google Sheets API",
+      "i18next",
+      "Tailwind CSS",
+    ],
+    highlights: [
+      "Built multilingual support (Thai/English) with i18next",
+      "Integrated Google Sheets API as a data source for center listings",
+      "Implemented search and pagination across multiple center categories",
+    ],
+    github: "https://github.com/Kaungkhantk3",
+    image: "/images/bangkok-centers.png",
+  },
+
+  {
+    title: "Corporate SPA — SWPC Co., Ltd",
+    subtitle: "Internship Project · MFessolutions Co., Ltd",
+    description:
+      "Corporate single-page application website with smooth page transitions, contact form validation, and bilingual Thai/English content.",
+    stack: ["React", "TypeScript", "Framer Motion", "i18next", "Tailwind CSS"],
+    highlights: [
+      "Implemented smooth page transitions and scroll animations using Framer Motion",
+      "Built contact form with client-side validation",
+      "Added Thai/English internationalization with i18next",
+    ],
+    github: "https://github.com/Kaungkhantk3",
+    image: "/images/swpc-website.png",
+  },
+
+  {
+    title: "Corporate SPA — MFessolutions Co., Ltd",
+    subtitle: "Internship Project · MFessolutions Co., Ltd",
+    description:
+      "Official company website built as a single-page application with animated sections, multilingual support, and responsive design.",
+    stack: ["React", "TypeScript", "Framer Motion", "i18next", "Tailwind CSS"],
+    highlights: [
+      "Delivered fully responsive SPA with animated section transitions",
+      "Implemented i18n for Thai and English content",
+      "Built reusable component library for consistent design across sections",
+    ],
+    github: "https://github.com/Kaungkhantk3",
+    image: "/images/mfessolutions-website.png",
+  },
+
+  // ─── Personal projects ────────────────────────────────────────────────────
+
   {
     title: "Weather Dashboard",
     description:
-      "A responsive weather app that fetches live city weather data and shows key conditions in a clean UI.",
+      "Responsive weather app that fetches live city weather data and displays conditions, temperature, and humidity in a clean UI.",
     stack: ["HTML", "CSS", "JavaScript", "OpenWeather API"],
     highlights: [
-      "Search by city",
-      "Display weather conditions and temperature",
-      "Responsive interface",
+      "Search by city name with live OpenWeather API fetch",
+      "Displays weather conditions, temperature, and humidity",
+      "Fully responsive across all screen sizes",
     ],
     github: "https://github.com/Kaungkhantk3/Weather_Dashboard",
     live: "https://kaungkhantk3.github.io/Weather_Dashboard/",
+    image: "/images/weather-dashboard.png",
   },
 ];

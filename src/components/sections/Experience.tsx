@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
+// cSpell:ignore Mfessoultions Luang Chiang
 
 const experiences = [
   {
     title: "Full-Stack Developer Intern",
     company: "Mfessoultions Co., Ltd",
     location: "Bangkok, Thailand",
-    date: "Jan 2026 – Present",
+    date: "Jan 2026 – Apr 2026",
     color: "#6366f1",
     glow: "rgba(99,102,241,0.6)",
     items: [
@@ -48,7 +49,7 @@ export default function Experience() {
             <br />
             environments.
           </h2>
-          <p className="mb-12 max-w-[520px] text-[15px] leading-[1.75] text-white/55">
+          <p className="mb-12 max-w-130 text-[15px] leading-[1.75] text-white/55">
             Hands-on work across frontend, backend APIs, authentication,
             role-based access control, and database-driven systems.
           </p>
@@ -57,7 +58,7 @@ export default function Experience() {
         {/* Timeline */}
         <div className="relative flex flex-col gap-0">
           {/* Vertical line */}
-          <div className="absolute left-0 top-2 bottom-2 w-px bg-gradient-to-b from-[#6366f1] via-[rgba(99,102,241,0.4)] to-transparent" />
+          <div className="absolute left-0 top-2 bottom-2 w-px bg-linear-to-b from-[#6366f1] via-[rgba(99,102,241,0.4)] to-transparent" />
 
           {experiences.map((exp, i) => (
             <motion.div
@@ -70,7 +71,7 @@ export default function Experience() {
             >
               {/* Timeline dot */}
               <span
-                className="absolute left-[-5px] top-[6px] h-[11px] w-[11px] rounded-full border-2 border-[#060612]"
+                className="absolute -left-1.25 top-1.5 h-2.75 w-2.75 rounded-full border-2 border-base"
                 style={{
                   background: exp.color,
                   boxShadow: `0 0 12px ${exp.glow}`,
@@ -78,12 +79,12 @@ export default function Experience() {
               />
 
               {/* Card */}
-              <div className="glass card-shimmer rounded-3xl p-6 transition-all duration-300 hover:border-[rgba(129,140,248,0.2)] hover:bg-white/[0.06]">
+              <div className="glass card-shimmer rounded-3xl p-6 transition-all duration-300 hover:border-[rgba(129,140,248,0.2)] hover:bg-white/6">
                 <div className="mb-2 flex flex-wrap items-start justify-between gap-3">
                   <h3 className="font-display text-[18px] font-bold text-white">
                     {exp.title}
                   </h3>
-                  <span className="flex-shrink-0 rounded-full border border-white/6 bg-white/4 px-3 py-1 text-[12px] text-white/40">
+                  <span className="shrink-0 rounded-full border border-white/6 bg-white/4 px-3 py-1 text-[12px] text-white/40">
                     {exp.date}
                   </span>
                 </div>
@@ -99,7 +100,7 @@ export default function Experience() {
                       className="flex gap-2.5 text-[13px] text-white/55"
                     >
                       <span
-                        className="mt-[7px] h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent"
+                        className="mt-1.75 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
                         style={{ boxShadow: "0 0 5px rgba(129,140,248,0.4)" }}
                       />
                       {item}
