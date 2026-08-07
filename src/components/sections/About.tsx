@@ -4,32 +4,32 @@ const cards = [
   {
     title: "Full-Stack Development",
     description:
-      "Build complete web applications across frontend interfaces, backend APIs, authentication flows, and database-driven features.",
+      "Shipped four production-ready full-stack web applications, from frontend interfaces to backend APIs, authentication flows, and database-driven features.",
   },
   {
     title: "Backend Systems",
     description:
-      "Develop REST APIs with Node.js and Express, including JWT authentication, RBAC, modular routing, and business logic handling.",
+      "Develop REST APIs with Node.js/Express and FastAPI, including JWT authentication, RBAC, scheduled jobs, and business logic handling.",
   },
   {
     title: "Database Design",
     description:
-      "Work with MySQL and Prisma to design relational schemas, structure data models, and support scalable application features.",
+      "Work with MySQL, PostgreSQL, and Prisma/SQLAlchemy to design relational schemas, structure data models, and support scalable application features.",
   },
   {
     title: "Product Features",
     description:
-      "Implemented admin dashboards, CRUD workflows, file uploads, image export flows, and real-world application features.",
+      "Implemented admin dashboards, CRUD workflows, file uploads, monitoring/alerting logic, and real-world application features.",
   },
   {
     title: "Development Workflow",
     description:
-      "Use Git-based collaboration, Docker environments, clean project structure, and maintainable coding practices in development.",
+      "Use Git-based collaboration, Docker environments, CI/CD pipelines, clean project structure, and maintainable coding practices in development.",
   },
   {
-    title: "Current Goal",
+    title: "Current Focus",
     description:
-      "Looking for full-stack developer roles where I can contribute to real products and continue growing through practical engineering work.",
+      "Currently contributing to web application development in a part-time operations role while pursuing full-stack developer opportunities to grow through practical engineering work.",
   },
 ];
 

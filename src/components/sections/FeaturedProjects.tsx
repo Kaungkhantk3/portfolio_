@@ -96,6 +96,7 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
 
 /* ── Main Component ── */
 export default function FeaturedProjects() {
+  const [showAll, setShowAll] = useState(false);
   const featured = projects.filter((p) => p.featured);
   const hero = featured[0];
   const secondary = featured.slice(1);
@@ -117,10 +118,35 @@ export default function FeaturedProjects() {
             <br />
             real applications.
           </h2>
-          <p className="mb-12 max-w-[520px] text-[15px] leading-[1.75] text-white/55">
+          <p className="mb-8 max-w-130 text-[15px] leading-[1.75] text-white/55">
             Selected projects focused on product thinking, practical
             engineering, and clean implementation.
           </p>
+
+          {/* Filter toggle */}
+          {others.length > 0 && (
+            <div className="mb-12 inline-flex rounded-full border border-white/8 bg-white/3 p-1">
+              {(
+                [
+                  { key: false, label: "Featured" },
+                  { key: true, label: "All Projects" },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.label}
+                  onClick={() => setShowAll(tab.key)}
+                  className={[
+                    "rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-200",
+                    showAll === tab.key
+                      ? "bg-gradient-btn text-white shadow-[0_2px_12px_rgba(99,102,241,0.3)]"
+                      : "text-white/50 hover:text-white/80",
+                  ].join(" ")}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
         </motion.div>
 
         {/* ── Hero project ── */}
@@ -276,7 +302,7 @@ export default function FeaturedProjects() {
         )}
 
         {/* ── More work ── */}
-        {others.length > 0 && (
+        {showAll && others.length > 0 && (
           <div>
             <div className="mb-6 flex items-center gap-4">
               <h3 className="font-display text-[18px] font-bold text-white">

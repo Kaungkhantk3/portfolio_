@@ -1,20 +1,33 @@
 import { motion } from "framer-motion";
-// cSpell:ignore Mfessoultions Luang Chiang
+// cSpell:ignore Mfessolutions Luang Chiang
 
 const experiences = [
   {
+    title: "Technical Operations Assistant (Part-Time)",
+    company: "Inno Mind Healthcare Recruitment Group",
+    location: "Remote · UK Hours",
+    date: "May 2026 – Present",
+    color: "#22c55e",
+    glow: "rgba(34,197,94,0.6)",
+    items: [
+      "Contributed to the planning, architecture, and development of a web-based management system, translating business requirements into actionable technical solutions.",
+      "Delivered cross-functional technical support across UK business hours, troubleshooting hardware, software, and workflow issues to minimize operational disruptions.",
+      "Handled confidential client information with discretion while adhering to strict operational procedures and data privacy standards.",
+    ],
+  },
+  {
     title: "Full-Stack Developer Intern",
-    company: "Mfessoultions Co., Ltd",
+    company: "MFessolutions Co., Ltd",
     location: "Bangkok, Thailand",
     date: "Jan 2026 – Apr 2026",
     color: "#6366f1",
     glow: "rgba(99,102,241,0.6)",
     items: [
-      "Developed 10+ responsive UI components using React and TypeScript.",
-      "Built and maintained 15+ RESTful API endpoints using Node.js and Express.",
-      "Implemented authentication and role-based access control using JWT.",
-      "Resolved performance bottlenecks and bugs to improve application stability.",
-      "Collaborated with team members through Git-based workflows in an agile environment.",
+      "Engineered and shipped four production-ready web applications, including corporate SPAs, admin dashboards, a bilingual directory platform, and an interactive card creator.",
+      "Replaced manual data entry processes by integrating Google Sheets APIs to automate business data synchronization, eliminating human error and ensuring real-time data availability.",
+      "Architected 15+ REST API endpoints using Node.js, Express, Prisma, and MySQL.",
+      "Secured dashboard access and protected REST API endpoints for multiple user roles by implementing JWT authentication and role-based access control (RBAC).",
+      "Standardized development environments and streamlined deployment pipelines utilizing Docker, Docker Compose, and GitLab workflows.",
     ],
   },
   {
@@ -25,9 +38,7 @@ const experiences = [
     color: "#8b5cf6",
     glow: "rgba(139,92,246,0.6)",
     items: [
-      "Assisted students in understanding programming fundamentals.",
-      "Guided students in debugging and troubleshooting code issues during labs.",
-      "Provided one-on-one support for students struggling with programming concepts.",
+      "Mentored 60+ students per semester, providing lab guidance, debugging support, and one-on-one programming instruction.",
     ],
   },
 ];

@@ -8,7 +8,7 @@ const GlobeCanvas = lazy(() => import("../ui/GlobeCanvas"));
 const stats = [
   { num: "8+", label: "Projects shipped" },
   { num: "15+", label: "API endpoints built" },
-  { num: "3.86", label: "GPA" },
+  { num: "3.86", label: "GPAX" },
   { num: "2y+", label: "Teaching experience" },
 ];
 
@@ -26,10 +26,10 @@ export default function Hero() {
           transition={{ duration: 0.6 }}
         >
           {/* Status badge */}
-          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.08] px-4 py-2">
+          <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/8 px-4 py-2">
             <span className="pulse-dot" />
             <span className="text-[12px] font-medium text-emerald-300">
-              Full-Stack Developer · Available
+              Full-Stack Developer · Open to Full-Time Roles
             </span>
           </div>
 
@@ -41,11 +41,11 @@ export default function Hero() {
           </h1>
 
           {/* Description */}
-          <p className="mb-9 max-w-[480px] text-[16px] leading-[1.75] text-white/60">
-            I'm Kaung Khant Kyaw — a full-stack developer based in Bangkok,
-            building responsive web applications with React, TypeScript,
-            Node.js, Express, MySQL, Prisma, and Docker. I ship products
-            end-to-end.
+          <p className="mb-9 max-w-120 text-[16px] leading-[1.75] text-white/60">
+            I'm Kaung Khant Kyaw — a full-stack developer based in Bangkok. I've
+            shipped 4 production-ready web apps and 15+ REST APIs using React,
+            Node.js, FastAPI, and PostgreSQL/MySQL — from secure authentication
+            systems to real-time monitoring platforms.
           </p>
 
           {/* CTAs */}
@@ -76,11 +76,11 @@ export default function Hero() {
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-4 gap-3 max-w-[440px]">
+          <div className="grid grid-cols-4 gap-3 max-w-110">
             {stats.map((s) => (
               <div
                 key={s.label}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.03] px-3 py-3 text-center"
+                className="rounded-2xl border border-white/6 bg-white/3 px-3 py-3 text-center"
               >
                 <p className="font-display text-[20px] font-extrabold text-accent-bright leading-none">
                   {s.num}
@@ -115,7 +115,7 @@ export default function Hero() {
             style={{ aspectRatio: "1 / 1", maxWidth: "460px" }}
           >
             {/* Top shimmer */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[rgba(129,140,248,0.4)] to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-linear-to-r from-transparent via-[rgba(129,140,248,0.4)] to-transparent" />
 
             <Suspense
               fallback={

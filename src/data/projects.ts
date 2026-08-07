@@ -31,10 +31,9 @@ export const projects: Project[] = [
       "Docker",
     ],
     highlights: [
-      "Designed RESTful APIs for card creation, retrieval, editing, and sharing",
-      "Built SVG/Canvas-based image masking with photo upload, resize, rotation, and shape selection",
-      "Implemented shareable unique links and interactive unlock animations (drag-and-drop, scratch-to-reveal)",
-      "Designed relational database schema with Prisma ORM and MySQL; containerized with Docker Compose",
+      "Engineered a full-stack interactive platform featuring image uploads, customizable text styling, and shareable links",
+      "Solved complex frontend rendering challenges by implementing SVG and HTML5 Canvas masking alongside dynamic unlock animations",
+      "Containerized the application with Docker and designed backend APIs using Express.js and Prisma ORM to reliably manage user-generated content",
     ],
     github: "https://github.com/Kaungkhantk3",
     featured: true,
@@ -86,9 +85,9 @@ export const projects: Project[] = [
       "JavaScript",
     ],
     highlights: [
-      "Designed RESTful APIs for users, items, rentals, payments, reviews, chat, and notifications",
-      "Multi-step workflow: request → payment → approval → transfer → return → refund → completion",
-      "Implemented secure JWT authentication, bcrypt hashing, and admin/user role separation",
+      "Architected a full-stack marketplace to manage item listings, booking requests, real-time notifications, and payment verification workflows",
+      "Isolated administrative and user workflows by engineering a secure authorization layer using JWT and role-based access control (RBAC)",
+      "Designed scalable RESTful APIs and integrated backend services to streamline transaction processing",
       "Built real-time chat system between borrowers and lenders with admin platform management",
     ],
     github: "https://github.com/Kaungkhantk3",
@@ -152,6 +151,30 @@ export const projects: Project[] = [
   },
 
   // ─── Personal projects ────────────────────────────────────────────────────
+
+  {
+    title: "API Sentinel",
+    subtitle: "Personal Project",
+    description:
+      "Full-stack API monitoring platform running scheduled HTTP/HTTPS health checks, logging status codes and response times, and alerting on failures or SSRF-risky targets.",
+    stack: [
+      "FastAPI",
+      "Python",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "APScheduler",
+      "Docker",
+    ],
+    highlights: [
+      "Built scheduled HTTP/HTTPS health checks (default 30s interval) logging status codes, response times, and error details to PostgreSQL",
+      "Implemented alert logic flagging endpoints after three consecutive failed checks or a response-time threshold breach, covered by a dedicated pytest suite",
+      "Built SSRF protections rejecting requests to localhost, private, loopback, link-local, and reserved IP ranges, with redirects disabled during checks and verified by a separate URL-safety test suite",
+      "Secured the API with signed bearer-token authentication and Pydantic request/response validation; containerized with Docker and deployed to Railway with a managed PostgreSQL service",
+    ],
+    github: "https://github.com/Kaungkhantk3/API-TM-Tool",
+    live: "https://api-tm-tool-production.up.railway.app/docs",
+    image: "/images/api.png",
+  },
 
   {
     title: "Weather Dashboard",
