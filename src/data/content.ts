@@ -136,6 +136,9 @@ export const work = {
   title: "Selected work",
   linkLabels: { live: "Visit site", source: "Source" },
   overviewLabel: "All projects",
+  indexLabel: "Projects",
+  /** Screen-reader text for the odometer. */
+  counterLabel: (n: number, total: number) => `Project ${n} of ${total}`,
   projects: [
     {
       index: "01",

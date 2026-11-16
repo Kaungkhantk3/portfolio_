@@ -1,20 +1,9 @@
 import { useState } from "react";
-import type { MouseEvent } from "react";
 import { nav, site } from "../../data/content";
-import { ScrollTrigger } from "../../lib/gsap";
-import { lenisRef } from "../../lib/lenis";
-import { STACK_PHASE } from "../../lib/stackProgress";
+import { handleAnchorClick } from "../../lib/anchors";
 
-// On desktop "Stack" lives inside the pinned hero stage, so its anchor is a
-// scroll position inside the pin (just past the point where the chips are in).
-function goToStack(e: MouseEvent) {
-  const pin = ScrollTrigger.getById("stack");
-  if (!pin) return; // static layout: the normal #stack anchor works
-  e.preventDefault();
-  const y = pin.start + (pin.end - pin.start) * (STACK_PHASE.moveEnd + 0.1);
-  if (lenisRef.current) lenisRef.current.scrollTo(y);
-  else window.scrollTo({ top: y });
-}
+/* Step 4: only "Stack" was handled here (goToStack). Moved to lib/anchors.ts in
+   step 5 so "Work" and the hero CTA use the same logic. */
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -37,7 +26,7 @@ export default function Nav() {
             <a
               key={item.href}
               href={item.href}
-              onClick={item.href === "#stack" ? goToStack : undefined}
+              onClick={handleAnchorClick}
               className="font-mono text-[12px] uppercase tracking-[0.1em] text-muted transition-colors hover:text-ink"
             >
               {item.label}

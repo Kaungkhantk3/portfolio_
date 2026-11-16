@@ -30,5 +30,35 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     };
   }, [reducedMotion]);
 
+  // Pin lengths are measured in viewport heights, so after a resize the same
+  // scroll position would fall on a different part of a pinned timeline (a
+  // different project card, say). Keep the place instead: remember how far
+  // through the active pin we were, and go back there once it is re-measured.
+  useEffect(() => {
+    let saved: { trigger: ScrollTrigger; progress: number } | null = null;
+
+    const remember = () => {
+      const trigger = ScrollTrigger.getAll().find((t) => t.pin && t.isActive);
+      saved = trigger ? { trigger, progress: trigger.progress } : null;
+    };
+    const restore = () => {
+      if (!saved) return;
+      const { trigger, progress } = saved;
+      saved = null;
+      if (!ScrollTrigger.getAll().includes(trigger)) return;
+      const y = trigger.start + progress * (trigger.end - trigger.start);
+      if (Math.abs(y - window.scrollY) < 2) return;
+      if (lenisRef.current) lenisRef.current.scrollTo(y, { immediate: true, force: true });
+      else window.scrollTo(0, y);
+    };
+
+    ScrollTrigger.addEventListener("refreshInit", remember);
+    ScrollTrigger.addEventListener("refresh", restore);
+    return () => {
+      ScrollTrigger.removeEventListener("refreshInit", remember);
+      ScrollTrigger.removeEventListener("refresh", restore);
+    };
+  }, []);
+
   return children;
 }

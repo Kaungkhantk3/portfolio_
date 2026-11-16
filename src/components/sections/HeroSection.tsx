@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { hero, stack } from "../../data/content";
+import { handleAnchorClick } from "../../lib/anchors";
 import { gsap, SplitText, useGSAP } from "../../lib/gsap";
 import { REDUCED_QUERY } from "../../hooks/useMotionPrefs";
 import StatValue from "../ui/StatValue";
@@ -70,6 +71,7 @@ export default function HeroSection({ pinned = false }: { pinned?: boolean }) {
         <div className="flex flex-wrap gap-3">
           <a
             href={hero.cta.primary.href}
+            onClick={handleAnchorClick}
             className="rounded-full bg-accent px-6 py-3 text-[14px] font-semibold text-bg transition-opacity hover:opacity-90"
           >
             {hero.cta.primary.label} →
