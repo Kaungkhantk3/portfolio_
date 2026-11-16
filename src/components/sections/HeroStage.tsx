@@ -15,6 +15,8 @@ const PLATE_H_END =
   2 * PLATE.W * Math.sin(ELEVATION_END) +
   (PLATE.T / Math.cos(Math.PI / 6)) * Math.cos(ELEVATION_END);
 
+const PLATE_H_REST = 2 * PLATE.H + PLATE.T;
+
 /**
  * Hero + Marquee + 01 Stack.
  *
@@ -67,8 +69,16 @@ export default function HeroStage() {
           const stepPx = gsap.utils.clamp(90, 200, (bottom - top - plateH) / 2);
           const centerY = top + plateH / 2 + stepPx;
 
-          stage.style.setProperty("--step-px", `${stepPx}px`);
-          stage.style.setProperty("--step-u", `${stepPx / zoom}px`);
+          // SVG fallback (no WebGL): how much FURTHER apart than at rest each
+          // plate moves. It has no camera tilt, so its plates stay taller;
+          // the spread is trimmed by that difference to keep the same top edge.
+          // (Step 4 set the full step here, which double-counted the resting
+          // gap: found when testing with WebGL forced off.)
+          const restPx = (PLATE.CY[1] - PLATE.CY[0]) * zoom;
+          const untiltedExtra = ((PLATE_H_REST - PLATE_H_END) * zoom) / 2;
+          const spreadPx = Math.max(stepPx - untiltedExtra - restPx, 0);
+          stage.style.setProperty("--step-px", `${spreadPx}px`);
+          stage.style.setProperty("--step-u", `${spreadPx / zoom}px`);
           stackProgress.stepWorld = stepPx / zoom / Math.cos(ELEVATION_END);
 
           return {

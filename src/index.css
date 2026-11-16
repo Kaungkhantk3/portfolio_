@@ -3,17 +3,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
 */
 @import "@fontsource-variable/space-grotesk/wght.css";
-/* @import "@fontsource-variable/inter/wght.css";  (steps 1–3b: variable Inter for every weight) */
+@import "@fontsource-variable/inter/wght.css";
 @import "@fontsource-variable/jetbrains-mono/wght.css";
 
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────
+/* Step 4 experiment, reverted before step 5: static Inter 400 (latin) + variable
+   font for heavier weights. It did not improve LCP. Kept for the step 8
+   performance pass.
+
+─────────────────────────────────────────
    Inter (latin only)
    Weight 400 is a small static file, preloaded in index.html, because the
    hero paragraph (the LCP element) is set in it. Heavier weights come from
    the variable font, fetched only when something uses them.
-───────────────────────────────────────── */
+───────────────────────────────────────── 
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -30,6 +34,7 @@
   src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+*/
 
 /* ─────────────────────────────────────────
    Metric-matched fallbacks
@@ -81,7 +86,7 @@
   /* --font-display: 'Syne', sans-serif;      (pre-rebuild) */
   /* --font-body:    'DM Sans', sans-serif;   (pre-rebuild) */
   --font-display: 'Space Grotesk Variable', 'Space Grotesk Fallback', ui-sans-serif, system-ui, sans-serif;
-  --font-body:    'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
   --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Rebuild palette */

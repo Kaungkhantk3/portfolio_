@@ -58,6 +58,7 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
   const target = useRef({ x: 0, y: 0 });
   const current = useRef({ x: 0, y: 0 });
   const frames = useRef(0);
+  const time = useRef(0);
 
   const { geometry, edges, materials, anchor } = useMemo(() => {
     const geometry = new BoxGeometry(SIDE, THICK, SIDE);
@@ -151,7 +152,12 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
     current.current.x += (target.current.x - current.current.x) * k;
     current.current.y += (target.current.y - current.current.y) * k;
 
-    const t = state.clock.elapsedTime;
+    // Own running time rather than state.clock: THREE.Clock is deprecated
+    // (r183). R3F still constructs one internally, which is where the console
+    // warning comes from.
+    // const t = state.clock.elapsedTime;
+    time.current += Math.min(delta, 0.1);
+    const t = time.current;
     g.rotation.y = Math.sin(t * 0.35) * IDLE_ROT + current.current.x * PARALLAX;
     g.rotation.x = current.current.y * PARALLAX;
     g.position.y = (Math.sin(t * 0.9) * FLOAT_PX) / (zoom * cos);
@@ -283,7 +289,10 @@ export default function StackScene({ boxRef, labelRefs, onReady }: SceneProps) {
         storeRef.current = root.render(
           <Plates boxRef={boxRef} labelRefs={labelRefs} onReady={onReady} />,
         );
-      });
+      })
+      // No WebGL (blocked, unsupported, context limit): stay on the SVG stack,
+      // which spreads with the same timeline.
+      .catch(() => {});
 
     const resize = new ResizeObserver(() => {
       storeRef.current?.getState().setSize(host.clientWidth, host.clientHeight, 0, 0);
