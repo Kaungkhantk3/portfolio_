@@ -30,7 +30,7 @@ export default function Nav() {
           <a
             href={site.resume.href}
             download={site.resume.download}
-            className="rounded-md border border-line px-3 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] text-ink transition-colors hover:border-accent hover:text-accent"
+            className="rounded-full border border-line px-4 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] text-ink transition-colors hover:border-accent hover:text-accent"
           >
             {site.resume.label} ↓
           </a>

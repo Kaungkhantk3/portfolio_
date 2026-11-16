@@ -8,13 +8,13 @@ import WorkCard from "../work/WorkCard";
  */
 export default function SelectedWork() {
   return (
-    <section id="work" className="scroll-mt-14 px-4 py-20 md:px-6 md:py-28">
+    <section id="work" className="scroll-mt-14 px-4 py-10 md:px-6 min-[900px]:py-[60px]">
       <div className="mx-auto max-w-6xl">
         <SectionHeading index={work.index} label={work.label} title={work.title} />
         <ol className="space-y-5">
-          {work.projects.map((project) => (
+          {work.projects.map((project, i) => (
             <li key={project.index}>
-              <WorkCard project={project} />
+              <WorkCard project={project} featured={i === 0} />
             </li>
           ))}
         </ol>

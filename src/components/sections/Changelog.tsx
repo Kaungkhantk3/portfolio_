@@ -4,7 +4,7 @@ import SectionHeading from "../ui/SectionHeading";
 
 export default function Changelog() {
   return (
-    <section id="experience" className="scroll-mt-14 px-4 py-20 md:px-6 md:py-28">
+    <section id="experience" className="scroll-mt-14 px-4 py-10 md:px-6 min-[900px]:py-[60px]">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           index={experience.index}

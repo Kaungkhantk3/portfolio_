@@ -90,7 +90,8 @@ export type StackLayer = {
 export const stack = {
   index: "01",
   label: "Stack",
-  title: "Technologies I use to build complete web applications.",
+  // title: "Technologies I use to build complete web applications.",  (step 2 copy)
+  title: "End to end, layer by layer.",
   // Order matches the plates, top → bottom.
   layers: [
     {
@@ -334,9 +335,13 @@ export const experience = {
 export const contact = {
   index: "04",
   label: "Contact",
-  title: "Open to full-stack developer opportunities.",
-  paragraph:
-    "The best way to reach me is by email or LinkedIn. I'm open to full-stack developer opportunities involving modern web applications, backend APIs, database-driven systems, and product-focused engineering work.",
+  // title: "Open to full-stack developer opportunities.",  (step 2 copy)
+  // Rendered as title + accent-coloured titleEnd.
+  title: "Let's ship something",
+  titleEnd: ".",
+  // Paragraph under the terminal, removed in step 3b:
+  // paragraph:
+  //   "The best way to reach me is by email or LinkedIn. I'm open to full-stack developer opportunities involving modern web applications, backend APIs, database-driven systems, and product-focused engineering work.",
   command: `$ echo "let's build something" | mail ${site.email}`,
   response: "← 200 OK · usually replies within a day",
   links: [

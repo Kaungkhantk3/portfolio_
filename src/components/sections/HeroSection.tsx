@@ -8,8 +8,10 @@ import StackStage from "./StackStage";
 export default function HeroSection() {
   const root = useRef<HTMLElement>(null);
 
-  // Headline intro: lines rise out of an overflow-hidden mask. Opacity stays
-  // at 1 (the headline is the LCP element) and the whole thing is under 0.9s.
+  // Headline intro: lines rise inside an overflow-hidden mask. Opacity stays
+  // at 1 and the whole thing is under 0.9s. The lines start only 30% down, not
+  // fully below the mask (step 3 used yPercent: 105, which left the headline
+  // unpainted on the first frame), so the headline is visible from first paint.
   // It starts on mount and does not wait for fonts or the 3D chunk; autoSplit
   // re-splits if the web font changes the line breaks.
   useGSAP(
@@ -22,7 +24,8 @@ export default function HeroSection() {
           autoSplit: true,
           onSplit: (self) =>
             gsap.from(self.lines, {
-              yPercent: 105,
+              // yPercent: 105,  (step 3: hidden on the first frame)
+              yPercent: 30,
               duration: 0.7,
               stagger: 0.08,
               ease: "expo.out",

@@ -1,14 +1,23 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { createRoot, extend, useFrame } from "@react-three/fiber";
 import {
   BoxGeometry,
   EdgesGeometry,
+  Group,
+  LineBasicMaterial,
+  LineSegments,
+  Mesh,
   MeshBasicMaterial,
   Vector3,
-  type Group,
   type OrthographicCamera,
 } from "three";
 import { PLATE, PLATE_EDGE, plateFaces } from "../../lib/plates";
+
+// Register only the three.js classes the JSX below uses (<group>, <mesh>,
+// <lineSegments>, <lineBasicMaterial>). R3F's <Canvas> registers the entire
+// THREE namespace, which defeats tree-shaking, so the scene is mounted through
+// createRoot() instead (see StackScene at the bottom).
+extend({ Group, Mesh, LineSegments, LineBasicMaterial });
 
 /* The SVG fallback is a 2:1 "isometric" drawing, which is exactly an
    orthographic camera at 45° azimuth and 30° elevation. World units = SVG
@@ -180,6 +189,10 @@ function useStageActive(boxRef: RefObject<HTMLDivElement | null>) {
   return inView && tabVisible;
 }
 
+type SceneStore = ReturnType<ReturnType<typeof createRoot>["render"]>;
+
+/* Step 3 version, using <Canvas> (pulls in all of three.js):
+
 export default function StackScene(props: SceneProps) {
   const active = useStageActive(props.boxRef);
 
@@ -195,5 +208,74 @@ export default function StackScene(props: SceneProps) {
     >
       <Plates {...props} />
     </Canvas>
+  );
+}
+*/
+
+export default function StackScene({ boxRef, labelRefs, onReady }: SceneProps) {
+  const active = useStageActive(boxRef);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const storeRef = useRef<SceneStore | null>(null);
+  const activeRef = useRef(active);
+
+  // Pause / resume rendering.
+  useEffect(() => {
+    activeRef.current = active;
+    const state = storeRef.current?.getState();
+    if (!state) return;
+    state.setFrameloop(active ? "always" : "never");
+    if (active) state.invalidate();
+  }, [active]);
+
+  // Own canvas + R3F root. A fresh <canvas> per mount keeps StrictMode and HMR
+  // from ever reusing a WebGL context that is being torn down.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "display:block;width:100%;height:100%";
+    host.appendChild(canvas);
+
+    const root = createRoot(canvas);
+    let cancelled = false;
+
+    root
+      .configure({
+        orthographic: true,
+        flat: true, // no tone mapping: plate colours must match the SVG exactly
+        dpr: [1, 1.5],
+        frameloop: activeRef.current ? "always" : "never",
+        gl: { antialias: true, alpha: true, powerPreference: "high-performance" },
+        camera: { position: CAM_POS, near: 1, far: CAM_DIST * 3 },
+        size: { width: host.clientWidth, height: host.clientHeight, top: 0, left: 0 },
+      })
+      .then(() => {
+        if (cancelled) return;
+        storeRef.current = root.render(
+          <Plates boxRef={boxRef} labelRefs={labelRefs} onReady={onReady} />,
+        );
+      });
+
+    const resize = new ResizeObserver(() => {
+      storeRef.current?.getState().setSize(host.clientWidth, host.clientHeight, 0, 0);
+    });
+    resize.observe(host);
+
+    return () => {
+      cancelled = true;
+      resize.disconnect();
+      storeRef.current = null;
+      root.unmount();
+      canvas.remove();
+    };
+  }, [boxRef, labelRefs, onReady]);
+
+  return (
+    <div
+      ref={hostRef}
+      className="h-full w-full"
+      data-frameloop={active ? "always" : "never"}
+    />
   );
 }

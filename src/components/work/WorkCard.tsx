@@ -3,14 +3,25 @@ import Chip from "../ui/Chip";
 import BuildLog from "./BuildLog";
 import StatusBadge from "./StatusBadge";
 
-export default function WorkCard({ project }: { project: Project }) {
+export default function WorkCard({
+  project,
+  featured = false,
+}: {
+  project: Project;
+  /** Card 01 in the static list: accent border and a slightly larger title. */
+  featured?: boolean;
+}) {
   const { links } = project;
 
   return (
-    <article className="rounded-xl border border-line bg-surface p-5 md:p-8">
+    <article
+      className={`rounded-xl border bg-surface p-5 md:p-8 ${featured ? "border-accent" : "border-line"}`}
+    >
       <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
         <span className="font-mono text-[12px] text-accent">{project.index}</span>
-        <h3 className="font-display text-[22px] font-bold leading-tight text-ink md:text-[26px]">
+        <h3
+          className={`font-display font-bold leading-tight text-ink ${featured ? "text-[26px] md:text-[32px]" : "text-[22px] md:text-[26px]"}`}
+        >
           {project.title}
         </h3>
         {project.status && <StatusBadge status={project.status} />}

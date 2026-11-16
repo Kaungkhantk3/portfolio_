@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Review artefacts (screenshots, recordings, Lighthouse reports)
+review/
