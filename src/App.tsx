@@ -18,6 +18,7 @@ import SiteFooter from "./components/layout/SiteFooter";
 // import Marquee from "./components/sections/Marquee";
 // import StackSection from "./components/sections/StackSection";
 import HeroStage from "./components/sections/HeroStage";
+import PlateHandoff from "./components/sections/PlateHandoff";
 import SelectedWork from "./components/sections/SelectedWork";
 import Changelog from "./components/sections/Changelog";
 import ContactTerminal from "./components/sections/ContactTerminal";
@@ -31,6 +32,9 @@ export default function App() {
           {/* <HeroSection /> <Marquee /> <StackSection />  (steps 1–3b) */}
           <HeroStage />
           <SelectedWork />
+          {/* Plate → card 01 ghost. Renders nothing unless the handoff flag
+              (content.ts) or ?handoff=1 is on, on desktop with motion. */}
+          <PlateHandoff />
           <Changelog />
           <ContactTerminal />
         </main>

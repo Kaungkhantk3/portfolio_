@@ -4,6 +4,7 @@ import { domAnimation, LazyMotion, useMotionValue, useSpring } from "motion/reac
 import { work, type Project } from "../../data/content";
 import { FULL_MOTION_QUERY } from "../../hooks/useMotionPrefs";
 import { scrollToWorkLabel } from "../../lib/anchors";
+import { handoffEnabled } from "../../lib/handoff";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "../../lib/gsap";
 import Chip from "../ui/Chip";
 import StatusBadge from "./StatusBadge";
@@ -423,7 +424,9 @@ export default function WorkDeck() {
         tl.addLabel("start", 0)
           // The deck stays opaque while tilted: the section scrolls into view
           // before the pin starts, and must not arrive as an empty screen.
-          .from(deck, { rotateX: 28, duration: ENTER }, 0)
+          // With the plate → card handoff on, the deck arrives flat: the ghost
+          // lands on card 01's box, which must not be tilted when it does.
+          .from(deck, { rotateX: handoffEnabled() ? 0 : 28, duration: ENTER }, 0)
           .from(aside, { x: -40, autoAlpha: 0, duration: ENTER - 0.1 }, 0.1)
           .addLabel(cardLabel(0), ENTER);
 

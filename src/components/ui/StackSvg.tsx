@@ -14,6 +14,7 @@ function PlatePolygons({ index, cy }: { index: number; cy: number }) {
         points={`${CX + W},${cy} ${CX},${cy + H} ${CX},${cy + H + T} ${CX + W},${cy + T}`}
       />
       <polygon
+        data-plate-top
         fill={top}
         points={`${CX},${cy - H} ${CX + W},${cy} ${CX},${cy + H} ${CX - W},${cy}`}
       />
@@ -40,6 +41,7 @@ export default function StackSvg({ className = "" }: { className?: string }) {
       {[2, 1, 0].map((i) => (
         <g
           key={i}
+          data-plate={i}
           style={{
             transform: `translateY(calc(${i - 1} * var(--explode, 0) * var(--step-u, 0px)))`,
           }}

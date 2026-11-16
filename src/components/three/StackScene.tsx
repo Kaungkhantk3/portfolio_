@@ -11,6 +11,7 @@ import {
   Vector3,
   type OrthographicCamera,
 } from "three";
+import { handoffEnabled, handoffState } from "../../lib/handoff";
 import { PLATE, PLATE_EDGE, plateFaces } from "../../lib/plates";
 import { STACK_PHASE, STACK_TILT, stackProgress } from "../../lib/stackProgress";
 
@@ -39,6 +40,14 @@ const REST_STEP = (PLATE.CY[1] - PLATE.CY[0]) / COS;
 // World y of each plate's centre, from the SVG top-face centre.
 const PLATE_Y = PLATE.CY.map((cy) => -(cy - PLATE.VIEW_H / 2) / COS - THICK / 2);
 
+// Top face corners as (x, z) signs: far, right, near, left on screen.
+const FACE_CORNERS = [
+  [-1, -1],
+  [1, -1],
+  [1, 1],
+  [-1, 1],
+];
+
 const IDLE_ROT = (6 * Math.PI) / 180; // slow Y sway
 const PARALLAX = (8 * Math.PI) / 180; // ±8° toward the cursor
 const FLOAT_PX = 6;
@@ -55,12 +64,14 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
   const group = useRef<Group>(null);
   const plates = useRef<(Group | null)[]>([]);
   const lastExplode = useRef(-1);
+  const lastOpacity = useRef(1);
   const target = useRef({ x: 0, y: 0 });
   const current = useRef({ x: 0, y: 0 });
   const frames = useRef(0);
   const time = useRef(0);
 
   const { geometry, edges, materials, anchor } = useMemo(() => {
+    const fades = handoffEnabled();
     const geometry = new BoxGeometry(SIDE, THICK, SIDE);
     return {
       geometry,
@@ -68,7 +79,10 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
       // BoxGeometry face order: +x, -x, +y, -y, +z, -z.
       // From this camera +x is the screen-right side and +z the screen-left side.
       // polygonOffset pushes faces back a hair so the edge lines never z-fight.
-      materials: plateFaces.map(({ top, left, right }) =>
+      // With the handoff on, the top plate fades out mid-scroll. Its materials
+      // are transparent from the start: switching `transparent` later makes
+      // three.js rebuild the shaders, a ~0.8s freeze in the middle of a scroll.
+      materials: plateFaces.map(({ top, left, right }, i) =>
         [right, right, top, top, left, left].map(
           (color) =>
             new MeshBasicMaterial({
@@ -76,6 +90,7 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
               polygonOffset: true,
               polygonOffsetFactor: 1,
               polygonOffsetUnits: 1,
+              transparent: fades && i === 0,
             }),
         ),
       ),
@@ -175,9 +190,36 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
       el.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px)`;
     });
 
+    // Plate → card handoff (only while its overlay is mounted): publish where
+    // the top plate's top face is on screen, and fade that plate as the ghost
+    // takes over.
+    if (handoffState.active) {
+      const rect = state.gl.domElement.getBoundingClientRect();
+      const top = PLATE_Y[1] + step + THICK / 2;
+      FACE_CORNERS.forEach(([sx, sz], k) => {
+        anchor.set((sx * SIDE) / 2, top, (sz * SIDE) / 2).applyMatrix4(g.matrixWorld).project(camera);
+        handoffState.quad[k * 2] = rect.left + (anchor.x * 0.5 + 0.5) * rect.width;
+        handoffState.quad[k * 2 + 1] = rect.top + (-anchor.y * 0.5 + 0.5) * rect.height;
+      });
+    }
+    const opacity = handoffState.active ? handoffState.plateOpacity : 1;
+    if (opacity !== lastOpacity.current) {
+      lastOpacity.current = opacity;
+      const plate = plates.current[0];
+      plate?.traverse((child) => {
+        const material = (child as Mesh).material;
+        if (!material) return;
+        // Opacity only: a uniform, no shader rebuild.
+        for (const m of Array.isArray(material) ? material : [material]) m.opacity = opacity;
+      });
+      if (plate) plate.visible = opacity > 0;
+    }
+
     // Report ready once a real frame is on screen, so the SVG can fade out.
     if (frames.current < 2 && ++frames.current === 2) onReady(true);
   });
+
+  const fadesTop = handoffEnabled();
 
   return (
     <group ref={group}>
@@ -191,7 +233,7 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
         >
           <mesh geometry={geometry} material={materials[i]} />
           <lineSegments geometry={edges}>
-            <lineBasicMaterial color={PLATE_EDGE} />
+            <lineBasicMaterial color={PLATE_EDGE} transparent={fadesTop && i === 0} />
           </lineSegments>
         </group>
       ))}
