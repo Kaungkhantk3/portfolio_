@@ -78,6 +78,7 @@ export default function HeroSection({ pinned = false }: { pinned?: boolean }) {
           </a>
           <a
             href={hero.cta.secondary.href}
+            onClick={handleAnchorClick}
             className="rounded-full border border-line px-6 py-3 text-[14px] font-medium text-ink transition-colors hover:border-muted"
           >
             {hero.cta.secondary.label}

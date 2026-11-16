@@ -23,5 +23,12 @@ function useMediaQuery(query: string) {
 export function useMotionPrefs() {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const reducedMotion = useMediaQuery(REDUCED_QUERY);
-  return { isDesktop, reducedMotion, fullMotion: isDesktop && !reducedMotion };
+  return {
+    isDesktop,
+    reducedMotion,
+    /** Desktop with motion: pins, scrubbed timelines, 3D. */
+    fullMotion: isDesktop && !reducedMotion,
+    /** Small screens (or short windows) with motion: simple reveals only. */
+    lightMotion: !isDesktop && !reducedMotion,
+  };
 }

@@ -402,6 +402,7 @@ export default function WorkDeck() {
           onUpdate: () => syncFromTime(tl.time()),
           scrollTrigger: {
             id: "work",
+            refreshPriority: 1,
             trigger: stage,
             start: "top top",
             end: () => `+=${window.innerHeight * 0.8 * TOTAL}`,
@@ -502,7 +503,12 @@ export default function WorkDeck() {
 
         syncFromTime(tl.time());
 
+        // This pin mounts late (lazy chunk): triggers further down the page
+        // were measured without its spacer, so measure everything again.
+        const refresh = requestAnimationFrame(() => ScrollTrigger.refresh());
+
         return () => {
+          cancelAnimationFrame(refresh);
           ScrollTrigger.removeEventListener("refreshInit", measure);
           typing?.kill();
           chipsIn?.kill();

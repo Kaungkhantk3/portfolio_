@@ -69,6 +69,7 @@ export default function PlateHandoff() {
     const quad = new Array<number>(8).fill(0);
     let card: HTMLElement | null = null;
     let topPlate: SVGGElement | null = null;
+    let topLabel: HTMLElement | null = null;
     let shown = false;
 
     const setCardOpacity = (value: number | null) => {
@@ -78,6 +79,8 @@ export default function PlateHandoff() {
     const setPlateOpacity = (value: number) => {
       handoffState.plateOpacity = value; // WebGL plate (read by the scene)
       if (topPlate) topPlate.style.opacity = value === 1 ? "" : String(value); // SVG fallback
+      // The top layer's label and chips leave with their plate.
+      if (topLabel) topLabel.style.opacity = value === 1 ? "" : String(value);
     };
     const hide = () => {
       if (!shown) return;
@@ -90,6 +93,7 @@ export default function PlateHandoff() {
       const work = ScrollTrigger.getById("work");
       card ??= document.querySelector<HTMLElement>("[data-card]");
       topPlate ??= document.querySelector<SVGGElement>('[data-stack-box] [data-plate="0"]');
+      topLabel ??= document.querySelector<HTMLElement>("[data-stack-box] > ul > li");
       const mover = document.querySelector<HTMLElement>("[data-stack-mover]");
 
       // Until both pins (and the lazily loaded deck) exist there is nothing to

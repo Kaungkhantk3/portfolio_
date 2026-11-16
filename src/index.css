@@ -281,6 +281,19 @@
     50%, 100% { opacity: 0; }
   }
 
+  /* Marquee at a constant speed (small screens). The track holds four copies
+     of the list, so shifting by one copy loops seamlessly. On desktop the
+     position is driven from scroll velocity in Marquee.tsx instead. */
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-loop {
+      animation: marquee-loop 28s linear infinite;
+    }
+  }
+
+  @keyframes marquee-loop {
+    to { transform: translate3d(-25%, 0, 0); }
+  }
+
   /* Font family helpers */
   .font-display { font-family: var(--font-display); }
   .font-body    { font-family: var(--font-body); }

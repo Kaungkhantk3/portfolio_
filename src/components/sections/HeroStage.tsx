@@ -96,6 +96,9 @@ export default function HeroStage() {
           },
           scrollTrigger: {
             id: "stack",
+            // Pins are refreshed top to bottom whatever order they mount in
+            // (the deck is lazy), so everything below measures correctly.
+            refreshPriority: 2,
             trigger: stage,
             start: "top top",
             end: "+=200%",

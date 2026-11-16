@@ -4,10 +4,11 @@
 /* ── Feature flags ─────────────────────────────────────────────────────── */
 export const flags = {
   // Plate → card 01 handoff between sections 01 and 02.
-  // false: top plate fades out, card 01 fades + scales in from 0.96 (fallback).
-  // true:  Flip "ghost card" morphs the plate into card 01.
-  // Only enable once the seam is clean on resize and fast scroll.
-  enableFlipHandoff: false,
+  // true:  a ghost shape morphs the top plate into card 01 (PlateHandoff.tsx).
+  // false: the plate stays and the deck tilts in.
+  // ?handoff=0 / ?handoff=1 in the URL overrides this for one visit.
+  // enableFlipHandoff: false,  (default until step 7)
+  enableFlipHandoff: true,
 };
 
 /* ── Meta / identity ───────────────────────────────────────────────────── */
