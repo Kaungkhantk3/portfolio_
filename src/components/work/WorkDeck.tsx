@@ -117,10 +117,10 @@ function DeckCard({ project, i }: { project: Project; i: number }) {
       <CardShell>
         {/* Full face: the deck card. Fixed to the deck width so nothing
             re-wraps while the card resizes into its grid tile. */}
-        <div data-face="full" style={{ width: "var(--deck-w, 100%)" }}>
+        <div data-face="full" className="h-full" style={{ width: "var(--deck-w, 100%)" }}>
           <div
             data-face-content
-            className="p-7 group-data-[fit=compact]/work:p-5 group-data-[fit=tight]/work:p-5"
+            className="flex h-full flex-col p-7 group-data-[fit=compact]/work:p-5 group-data-[fit=tight]/work:p-5"
           >
             <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
               <span className="font-mono text-[12px] text-accent">{project.index}</span>
@@ -128,9 +128,7 @@ function DeckCard({ project, i }: { project: Project; i: number }) {
                 {project.title}
               </h3>
               {project.status && <StatusBadge status={project.status} />}
-              <div className="ml-auto">
-                <CardLinks project={project} />
-              </div>
+              {/* Step 5 had the links here, top right. Step 5b: bottom row. */}
             </div>
 
             {project.context && (
@@ -168,13 +166,17 @@ function DeckCard({ project, i }: { project: Project; i: number }) {
               </pre>
             </div>
 
-            <ul className="mt-5 flex flex-wrap gap-2 group-data-[fit=compact]/work:mt-4 group-data-[fit=tight]/work:mt-4">
-              {project.stack.map((chip) => (
-                <li key={chip} data-chip>
-                  <Chip className="bg-bg">{chip}</Chip>
-                </li>
-              ))}
-            </ul>
+            {/* Chips + links: pinned to the bottom of the (equal-height) card. */}
+            <div className="mt-auto flex flex-wrap items-end justify-between gap-x-6 gap-y-3 pt-5 group-data-[fit=compact]/work:pt-4 group-data-[fit=tight]/work:pt-4">
+              <ul className="flex flex-wrap gap-2">
+                {project.stack.map((chip) => (
+                  <li key={chip} data-chip>
+                    <Chip className="bg-bg">{chip}</Chip>
+                  </li>
+                ))}
+              </ul>
+              <CardLinks project={project} />
+            </div>
           </div>
         </div>
 
@@ -223,6 +225,7 @@ export default function WorkDeck() {
         const cards = q("[data-card]") as HTMLElement[];
         const fullFaces = q('[data-face="full"]') as HTMLElement[];
         const tileFaces = q('[data-face="tile"]') as HTMLElement[];
+        const contents = q("[data-face-content]") as HTMLElement[];
         const slots = q("[data-slot]") as HTMLElement[];
         const indexLinks = q("[data-index-link]") as HTMLElement[];
         const body = one("[data-work-body]");
@@ -245,6 +248,10 @@ export default function WorkDeck() {
           // the section heading row, until the tallest card fits.
           let cardH = 0;
           let deckW = 0;
+          // Content stretches to the card (links row sits at the bottom), so
+          // measure with the card height released: every card then takes the
+          // height of the tallest one's content.
+          stage.style.setProperty("--card-h", "auto");
           for (const fit of ["normal", "compact", "tight"]) {
             stage.dataset.fit = fit;
             deckW = deck.offsetWidth;
@@ -377,6 +384,8 @@ export default function WorkDeck() {
           showComplete(card);
         });
         gsap.set(tileFaces, { autoAlpha: 0 });
+        // Cards waiting behind the active one show surface + border only.
+        gsap.set(contents.slice(1), { autoAlpha: 0 });
         // Perspective and pivot are fixed, not tweened: animating the perspective
         // along with the angle cancels the tilt out visually.
         gsap.set(deck, { transformPerspective: PERSPECTIVE, transformOrigin: "50% 100%" });
@@ -408,27 +417,37 @@ export default function WorkDeck() {
         });
 
         // Enter
+        // (Step 5 revealed the heading words here, at the start of the pin, which
+        // left an empty band while the section scrolled in. They now have their
+        // own trigger below.)
         tl.addLabel("start", 0)
-          .from(split.words, { yPercent: 100, duration: 0.3, stagger: 0.06, ease: "power3.out" }, 0)
           // The deck stays opaque while tilted: the section scrolls into view
           // before the pin starts, and must not arrive as an empty screen.
           .from(deck, { rotateX: 28, duration: ENTER }, 0)
           .from(aside, { x: -40, autoAlpha: 0, duration: ENTER - 0.1 }, 0.1)
           .addLabel(cardLabel(0), ENTER);
 
-        // Card k−1 → card k
+        // Card k−1 → card k, in sequence so the two never read through each
+        // other: the outgoing card leaves in the first half of the step and is
+        // fully transparent by 0.45; the incoming card settles in the second
+        // half and its content only fades in from 0.5. (Step 5 ran both across
+        // the whole step, so at the midpoint both were half visible.)
+        // Lower cards have the higher z-index, so the outgoing card stays in
+        // front until it is gone.
         for (let k = 1; k < TOTAL; k++) {
-          const at = ENTER + (k - 1) * STEP + 0.04;
-          const d = STEP - 0.08;
-          tl.to(cards[k - 1], { yPercent: -110, rotateX: -38, autoAlpha: 0, duration: d }, at)
-            .to(cards[k], { ...slot(0), borderColor: ACCENT, duration: d }, at)
-            .to(bar, { yPercent: 100 * k, duration: d }, at)
-            .to(odometer, { yPercent: (-100 / TOTAL) * k, duration: d }, at);
+          const t0 = ENTER + (k - 1) * STEP;
+          const at = (f: number) => t0 + f * STEP;
+          tl.to(cards[k - 1], { yPercent: -110, rotateX: -38, duration: 0.5 * STEP, ease: "sine.in" }, at(0))
+            .to(cards[k - 1], { autoAlpha: 0, duration: 0.4 * STEP, ease: "none" }, at(0.05))
+            .to(cards[k], { ...slot(0), borderColor: ACCENT, duration: 0.6 * STEP, ease: "sine.out" }, at(0.4))
+            .to(contents[k], { autoAlpha: 1, duration: 0.4 * STEP, ease: "none" }, at(0.5))
+            .to(bar, { yPercent: 100 * k, duration: 0.6 * STEP }, at(0.2))
+            .to(odometer, { yPercent: (-100 / TOTAL) * k, duration: 0.6 * STEP }, at(0.2));
           // The cards behind move up one slot.
           for (let n = 1; k + n < TOTAL && n < SLOTS.length; n++) {
-            tl.to(cards[k + n], { ...slot(n), duration: d }, at);
+            tl.to(cards[k + n], { ...slot(n), duration: 0.6 * STEP, ease: "sine.out" }, at(0.4));
           }
-          tl.addLabel(cardLabel(k), ENTER + k * STEP);
+          tl.addLabel(cardLabel(k), t0 + STEP);
         }
 
         // Deck → overview grid: every card travels to its tile.
@@ -465,6 +484,19 @@ export default function WorkDeck() {
           .to({}, { duration: END_HOLD }, GRID_AT + GRID)
           .addLabel("end", GRID_AT + GRID + END_HOLD);
 
+        // Heading words: when the section enters the viewport, not when it pins.
+        gsap.from(split.words, {
+          yPercent: 100,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: stage,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
         syncFromTime(tl.time());
 
         return () => {
@@ -499,7 +531,8 @@ export default function WorkDeck() {
       className="group/work relative flex h-svh min-h-[600px] flex-col overflow-clip pt-14"
     >
       <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col px-6 pb-6 pt-7">
-        <header className="mb-6 shrink-0 group-data-[fit=tight]/work:hidden">
+        {/* Above the deck, so a card flying out never covers it. */}
+        <header className="relative z-20 mb-6 shrink-0 group-data-[fit=tight]/work:hidden">
           <p className="mb-3 font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
             <span className="text-accent">{work.index}</span>
             <span className="mx-2 text-line">/</span>
@@ -517,7 +550,28 @@ export default function WorkDeck() {
 
         <div data-work-body className="relative grid min-h-0 flex-1 grid-cols-[210px_1fr] gap-10">
           {/* Left: index + odometer */}
+          {/* (Step 5 put the odometer at the bottom of this column.) */}
           <aside data-work-index className="flex flex-col pt-9">
+            {/* Visual odometer; screen readers get the live text above. */}
+            <div
+              className="mb-5 flex items-baseline font-display text-[84px] font-bold leading-none tabular-nums text-ink"
+              aria-hidden="true"
+            >
+              <span>0</span>
+              <span className="h-[1em] overflow-hidden">
+                <span data-odometer className="flex flex-col">
+                  {projects.map((project) => (
+                    <span key={project.index} className="h-[1em]">
+                      {Number(project.index)}
+                    </span>
+                  ))}
+                </span>
+              </span>
+              <span className="ml-3 font-mono text-[14px] font-normal text-muted">
+                / {String(TOTAL).padStart(2, "0")}
+              </span>
+            </div>
+
             <nav aria-label={work.indexLabel} className="relative">
               <span
                 data-index-bar
@@ -544,25 +598,6 @@ export default function WorkDeck() {
               </ol>
             </nav>
 
-            {/* Visual odometer; screen readers get the live text above. */}
-            <div
-              className="mt-auto flex items-baseline font-display text-[84px] font-bold leading-none tabular-nums text-ink"
-              aria-hidden="true"
-            >
-              <span>0</span>
-              <span className="h-[1em] overflow-hidden">
-                <span data-odometer className="flex flex-col">
-                  {projects.map((project) => (
-                    <span key={project.index} className="h-[1em]">
-                      {Number(project.index)}
-                    </span>
-                  ))}
-                </span>
-              </span>
-              <span className="ml-3 font-mono text-[14px] font-normal text-muted">
-                / {String(TOTAL).padStart(2, "0")}
-              </span>
-            </div>
           </aside>
 
           {/* Right: the deck. Cards share one grid cell. LazyMotion loads the
