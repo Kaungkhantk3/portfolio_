@@ -1,13 +1,44 @@
+import { useRef } from "react";
 import { hero } from "../../data/content";
-import { plateLabelColors } from "../../lib/plates";
-import StackSvg from "../ui/StackSvg";
-
-const formatStat = (value: number, decimals = 0) => value.toFixed(decimals);
+import { gsap, SplitText, useGSAP } from "../../lib/gsap";
+import { REDUCED_QUERY } from "../../hooks/useMotionPrefs";
+import StatValue from "../ui/StatValue";
+import StackStage from "./StackStage";
 
 export default function HeroSection() {
+  const root = useRef<HTMLElement>(null);
+
+  // Headline intro: lines rise out of an overflow-hidden mask. Opacity stays
+  // at 1 (the headline is the LCP element) and the whole thing is under 0.9s.
+  // It starts on mount and does not wait for fonts or the 3D chunk; autoSplit
+  // re-splits if the web font changes the line breaks.
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(`not ${REDUCED_QUERY}`, () => {
+        const split = SplitText.create("[data-hero-headline]", {
+          type: "lines",
+          mask: "lines",
+          autoSplit: true,
+          onSplit: (self) =>
+            gsap.from(self.lines, {
+              yPercent: 105,
+              duration: 0.7,
+              stagger: 0.08,
+              ease: "expo.out",
+            }),
+        });
+        return () => split.revert();
+      });
+    },
+    { scope: root },
+  );
+
   return (
     <section
+      ref={root}
       id="hero"
+      data-stage-root
       className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-24 md:px-6 min-[900px]:min-h-svh min-[900px]:grid-cols-[1.1fr_0.9fr]"
     >
       <div>
@@ -52,7 +83,7 @@ export default function HeroSection() {
                 {stat.label}
               </dt>
               <dd className="font-display text-[28px] font-bold leading-none text-ink tabular-nums">
-                <span data-stat>{formatStat(stat.value, stat.decimals)}</span>
+                <StatValue value={stat.value} decimals={stat.decimals} />
                 {stat.suffix && <span className="text-accent">{stat.suffix}</span>}
               </dd>
             </div>
@@ -60,24 +91,7 @@ export default function HeroSection() {
         </dl>
       </div>
 
-      {/* Static stack. The lazy R3F canvas replaces the desktop one in step 3. */}
-      <div role="img" aria-label={`Three stacked layers: ${hero.plates.join(", ")}`}>
-        {/* ≥900px: labels to the right of each plate, with leader lines */}
-        <StackSvg labels={hero.plates} className="hidden w-full min-[900px]:block" />
-
-        {/* <900px: plain stack, labels as a stacked list underneath */}
-        <div className="min-[900px]:hidden">
-          <StackSvg className="mx-auto w-full max-w-[260px]" />
-          <ul className="mt-6 space-y-2 font-mono text-[12px]">
-            {hero.plates.map((label, i) => (
-              <li key={label} className="flex items-center gap-3" style={{ color: plateLabelColors[i] }}>
-                <span className="h-px w-6 bg-current" aria-hidden="true" />
-                {label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <StackStage labels={hero.plates} />
     </section>
   );
 }
