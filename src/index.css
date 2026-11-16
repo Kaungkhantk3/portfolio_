@@ -1,4 +1,10 @@
+/* Pre-rebuild fonts (Syne / DM Sans via render-blocking Google @import), replaced
+   by self-hosted variable fonts below:
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+*/
+@import "@fontsource-variable/space-grotesk/wght.css";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 
 @import "tailwindcss";
 
@@ -7,12 +13,26 @@
 ───────────────────────────────────────── */
 @theme {
   /* Fonts */
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
+  /* --font-display: 'Syne', sans-serif;      (pre-rebuild) */
+  /* --font-body:    'DM Sans', sans-serif;   (pre-rebuild) */
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Brand colors */
+  /* Rebuild palette */
+  --color-bg:      #0D0E0C;
+  --color-surface: #16171A;
+  --color-plate:   #1C1D1A;
+  --color-line:    #262723;
+  --color-ink:     #ECE9E2;
+  --color-muted:   #9A978F;
+  --color-accent:  #FF6A2B;
+  --color-live:    #5BD66B;
+  --color-amber:   #E3B341;
+
+  /* Pre-rebuild brand colors (still referenced by the retired components) */
   --color-base:          #060612;
-  --color-accent:        #818cf8;
+  /* --color-accent:        #818cf8;  (pre-rebuild, replaced above) */
   --color-accent-bright: #a5b4fc;
   --color-accent-dim:    rgba(129, 140, 248, 0.15);
   --color-accent-purple: #c084fc;
@@ -53,13 +73,12 @@
    Base styles
 ───────────────────────────────────────── */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  /* html { scroll-behavior: smooth; }  (pre-rebuild; Lenis owns smooth scroll now) */
 
   body {
-    background-color: var(--color-base);
-    color: #e2e0f0;
+    /* background-color: var(--color-base); color: #e2e0f0;  (pre-rebuild) */
+    background-color: var(--color-bg);
+    color: var(--color-ink);
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -71,8 +90,8 @@
 
   ::-webkit-scrollbar             { width: 5px; }
   ::-webkit-scrollbar-track       { background: transparent; }
-  ::-webkit-scrollbar-thumb       { background: rgba(129, 140, 248, 0.25); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(129, 140, 248, 0.45); }
+  ::-webkit-scrollbar-thumb       { background: var(--color-line); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 }
 
 /* ─────────────────────────────────────────
@@ -224,9 +243,10 @@
   animation-delay: -14s;
 }
 
-/* ─────────────────────────────────────────
+/* Pre-rebuild noise grain overlay, retired:
+ ─────────────────────────────────────────
    Noise grain overlay
-───────────────────────────────────────── */
+───────────────────────────────────────── 
 body::after {
   content: '';
   position: fixed;
@@ -236,3 +256,4 @@ body::after {
   pointer-events: none;
   z-index: 1;
 }
+*/
