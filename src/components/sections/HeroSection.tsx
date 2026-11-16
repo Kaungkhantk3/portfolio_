@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import { hero } from "../../data/content";
+import { hero, stack } from "../../data/content";
 import { gsap, SplitText, useGSAP } from "../../lib/gsap";
 import { REDUCED_QUERY } from "../../hooks/useMotionPrefs";
 import StatValue from "../ui/StatValue";
 import StackStage from "./StackStage";
 
-export default function HeroSection() {
+export default function HeroSection({ pinned = false }: { pinned?: boolean }) {
   const root = useRef<HTMLElement>(null);
 
   // Headline intro: lines rise inside an overflow-hidden mask. Opacity stays
@@ -41,10 +41,15 @@ export default function HeroSection() {
     <section
       ref={root}
       id="hero"
-      data-stage-root
-      className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-24 md:px-6 min-[900px]:min-h-svh min-[900px]:grid-cols-[1.1fr_0.9fr]"
+      // Pinned (desktop with motion): fills the stage above the marquee.
+      // Otherwise: normal flow (steps 1–3b layout).
+      className={
+        pinned
+          ? "mx-auto grid w-full max-w-6xl flex-1 grid-cols-[1.1fr_0.9fr] items-center gap-10 px-6 pb-6 pt-20"
+          : "mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-24 md:px-6 min-[900px]:min-h-svh min-[900px]:grid-cols-[1.1fr_0.9fr]"
+      }
     >
-      <div>
+      <div data-hero-copy>
         <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-[12px] text-muted">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-live" aria-hidden="true" />
           {hero.status}
@@ -94,7 +99,7 @@ export default function HeroSection() {
         </dl>
       </div>
 
-      <StackStage labels={hero.plates} />
+      <StackStage labels={hero.plates} layers={stack.layers} />
     </section>
   );
 }

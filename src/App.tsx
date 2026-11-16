@@ -12,9 +12,12 @@
 import SmoothScroll from "./providers/SmoothScroll";
 import Nav from "./components/layout/Nav";
 import SiteFooter from "./components/layout/SiteFooter";
-import HeroSection from "./components/sections/HeroSection";
-import Marquee from "./components/sections/Marquee";
-import StackSection from "./components/sections/StackSection";
+// Steps 1–3b composed these three directly; HeroStage now wraps them so the
+// 01 Stack timeline can pin them as one stage.
+// import HeroSection from "./components/sections/HeroSection";
+// import Marquee from "./components/sections/Marquee";
+// import StackSection from "./components/sections/StackSection";
+import HeroStage from "./components/sections/HeroStage";
 import SelectedWork from "./components/sections/SelectedWork";
 import Changelog from "./components/sections/Changelog";
 import ContactTerminal from "./components/sections/ContactTerminal";
@@ -25,9 +28,8 @@ export default function App() {
       <div className="relative min-h-screen bg-bg text-ink">
         <Nav />
         <main>
-          <HeroSection />
-          <Marquee />
-          <StackSection />
+          {/* <HeroSection /> <Marquee /> <StackSection />  (steps 1–3b) */}
+          <HeroStage />
           <SelectedWork />
           <Changelog />
           <ContactTerminal />

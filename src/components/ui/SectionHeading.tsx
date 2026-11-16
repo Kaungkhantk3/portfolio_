@@ -4,15 +4,18 @@ export default function SectionHeading({
   label,
   title,
   titleEnd,
+  className = "mb-10 md:mb-14",
 }: {
   index: string;
   label: string;
   title: string;
   /** Accent-coloured ending, e.g. a period. */
   titleEnd?: string;
+  /** Bottom margin override. */
+  className?: string;
 }) {
   return (
-    <header className="mb-10 md:mb-14">
+    <header className={className}>
       <p className="mb-4 font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
         <span className="text-accent">{index}</span>
         <span className="mx-2 text-line">/</span>

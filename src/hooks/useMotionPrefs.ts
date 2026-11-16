@@ -1,7 +1,11 @@
 import { useSyncExternalStore } from "react";
 
-export const DESKTOP_QUERY = "(min-width: 900px)";
+// export const DESKTOP_QUERY = "(min-width: 900px)";  (steps 1–3b)
+// Pinned layouts also need some height: very short windows get the static path.
+export const DESKTOP_QUERY = "(min-width: 900px) and (min-height: 600px)";
 export const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
+/** Same condition as `fullMotion`, for gsap.matchMedia(). */
+export const FULL_MOTION_QUERY = `${DESKTOP_QUERY} and (prefers-reduced-motion: no-preference)`;
 
 function useMediaQuery(query: string) {
   return useSyncExternalStore(

@@ -12,6 +12,7 @@ import {
   type OrthographicCamera,
 } from "three";
 import { PLATE, PLATE_EDGE, plateFaces } from "../../lib/plates";
+import { STACK_PHASE, STACK_TILT, stackProgress } from "../../lib/stackProgress";
 
 // Register only the three.js classes the JSX below uses (<group>, <mesh>,
 // <lineSegments>, <lineBasicMaterial>). R3F's <Canvas> registers the entire
@@ -27,11 +28,14 @@ const COS = Math.cos(ELEVATION);
 const SIDE = PLATE.W * Math.SQRT2;
 const THICK = PLATE.T / COS;
 const CAM_DIST = 1000;
-const CAM_POS: [number, number, number] = [
-  CAM_DIST * COS * Math.SQRT1_2,
-  CAM_DIST * Math.sin(ELEVATION),
-  CAM_DIST * COS * Math.SQRT1_2,
+const camPos = (elevation: number): [number, number, number] => [
+  CAM_DIST * Math.cos(elevation) * Math.SQRT1_2,
+  CAM_DIST * Math.sin(elevation),
+  CAM_DIST * Math.cos(elevation) * Math.SQRT1_2,
 ];
+const CAM_POS = camPos(ELEVATION);
+// World distance between plates at rest (48 SVG units on screen at 30°).
+const REST_STEP = (PLATE.CY[1] - PLATE.CY[0]) / COS;
 // World y of each plate's centre, from the SVG top-face centre.
 const PLATE_Y = PLATE.CY.map((cy) => -(cy - PLATE.VIEW_H / 2) / COS - THICK / 2);
 
@@ -49,6 +53,8 @@ type SceneProps = {
 
 function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
   const group = useRef<Group>(null);
+  const plates = useRef<(Group | null)[]>([]);
+  const lastExplode = useRef(-1);
   const target = useRef({ x: 0, y: 0 });
   const current = useRef({ x: 0, y: 0 });
   const frames = useRef(0);
@@ -122,6 +128,22 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
       camera.zoom = zoom;
       camera.updateProjectionMatrix();
     }
+
+    // 01 Stack timeline, phase 1 (0 → 0.25 of its progress): the plates spread
+    // apart and the camera drops 10°. Read from the shared object every frame;
+    // nothing here goes through React.
+    const explode = Math.min(Math.max(stackProgress.current / STACK_PHASE.explodeEnd, 0), 1);
+    const elevation = ELEVATION - explode * STACK_TILT;
+    const cos = Math.cos(elevation);
+    const step = REST_STEP + ((stackProgress.stepWorld || REST_STEP) - REST_STEP) * explode;
+    if (explode !== lastExplode.current) {
+      lastExplode.current = explode;
+      camera.position.set(...camPos(elevation));
+      camera.lookAt(0, 0, 0);
+    }
+    plates.current.forEach((plate, i) => {
+      if (plate) plate.position.y = PLATE_Y[1] + (1 - i) * step;
+    });
     camera.updateMatrixWorld();
 
     // Lerp toward the cursor target (frame-rate independent, never snaps).
@@ -132,14 +154,14 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
     const t = state.clock.elapsedTime;
     g.rotation.y = Math.sin(t * 0.35) * IDLE_ROT + current.current.x * PARALLAX;
     g.rotation.x = current.current.y * PARALLAX;
-    g.position.y = (Math.sin(t * 0.9) * FLOAT_PX) / (zoom * COS);
+    g.position.y = (Math.sin(t * 0.9) * FLOAT_PX) / (zoom * cos);
     g.updateMatrixWorld();
 
     // Keep each label's leader line on its plate's right-hand corner.
     const { width, height } = state.size;
     labelRefs.current.forEach((el, i) => {
       if (!el) return;
-      anchor.set(SIDE / 2, PLATE_Y[i], -SIDE / 2).applyMatrix4(g.matrixWorld).project(camera);
+      anchor.set(SIDE / 2, PLATE_Y[1] + (1 - i) * step, -SIDE / 2).applyMatrix4(g.matrixWorld).project(camera);
       const x = (anchor.x * 0.5 + 0.5) * width - (width - boxW) / 2;
       const y = (-anchor.y * 0.5 + 0.5) * height - (height - boxH) / 2;
       const dx = x - (PLATE.CX + PLATE.W) * zoom;
@@ -154,7 +176,13 @@ function Plates({ boxRef, labelRefs, onReady }: SceneProps) {
   return (
     <group ref={group}>
       {PLATE_Y.map((y, i) => (
-        <group key={i} position={[0, y, 0]}>
+        <group
+          key={i}
+          position={[0, y, 0]}
+          ref={(el) => {
+            plates.current[i] = el;
+          }}
+        >
           <mesh geometry={geometry} material={materials[i]} />
           <lineSegments geometry={edges}>
             <lineBasicMaterial color={PLATE_EDGE} />
