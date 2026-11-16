@@ -10,7 +10,7 @@ export default function ContactTerminal() {
         <div className="rounded-xl border border-line bg-surface p-5 md:p-8">
           <div className="mb-6 rounded-md border border-line bg-bg p-4 font-mono text-[13px] leading-[1.9]">
             <p data-curl className="break-all text-ink">
-              {contact.curl}
+              {contact.command}
             </p>
             <p data-curl-response className="text-live">
               {contact.response}

@@ -19,8 +19,6 @@ export const site = {
   email: "kaungkhant.luke.dev@gmail.com",
   github: "https://github.com/Kaungkhantk3",
   linkedin: "https://www.linkedin.com/in/kaung-khant-kyaw-66064627b/",
-  // TODO(resume): public/resume.pdf is being replaced by hand with the updated
-  // resume (new InnoNet title). Do not regenerate or edit the PDF from code.
   resume: {
     href: "/resume.pdf",
     download: "Kaung_Khant_Kyaw_Resume.pdf",
@@ -45,10 +43,14 @@ export type Stat = {
 };
 
 export const hero = {
-  status: "Full-Stack Developer · Open to full-time roles",
-  headline: ["Building production systems", "with clean, secure architecture."],
+  status: "Open to full-time · Bangkok · UTC+7",
+  // Rendered as headline + accent-coloured headlineEnd.
+  headline: "I build the layers users never see",
+  headlineEnd: ".",
   paragraph:
-    "I'm Kaung Khant Kyaw, a full-stack developer based in Bangkok. I turn requirements into production systems: 4 web apps and 15+ REST endpoints shipped during a cooperative internship using React, Node.js and MySQL, with secured JWT/RBAC authentication. Most recently, I built and deployed the InnoNet company website on my own, from architecture to launch.",
+    "Full-stack developer, backend-first. I turn requirements into production systems — REST APIs, auth, relational data — and the React front ends on top. Right now I build and run InnoNet's company website in production.",
+  // Plate labels, top → bottom. Colours are assigned by position in the UI.
+  plates: ["client / react", "api / node · fastapi", "data / postgres · mysql"],
   stats: [
     { value: 4, label: "Apps shipped" },
     { value: 15, suffix: "+", label: "REST endpoints" },
@@ -284,9 +286,8 @@ export const experience = {
       org: "InnoNet Healthcare Recruitment Group",
       location: "Remote · UK hours",
       items: [
-        "Contributed to the planning, architecture, and development of a web-based management system, translating business requirements into actionable technical solutions.",
-        "Delivered cross-functional technical support across UK business hours, troubleshooting hardware, software, and workflow issues to minimize operational disruptions.",
-        "Handled confidential client information with discretion while adhering to strict operational procedures and data privacy standards.",
+        "Independently building and maintaining the company website (Next.js, Vercel): architecture, front end and SEO, from stakeholder requirements to shipped features.",
+        "Technical support across UK business hours, troubleshooting hardware, software and workflow issues.",
       ],
     },
     {
@@ -336,8 +337,8 @@ export const contact = {
   title: "Open to full-stack developer opportunities.",
   paragraph:
     "The best way to reach me is by email or LinkedIn. I'm open to full-stack developer opportunities involving modern web applications, backend APIs, database-driven systems, and product-focused engineering work.",
-  curl: `$ curl -X POST mailto:${site.email} -d "let's build something"`,
-  response: "200 OK",
+  command: `$ echo "let's build something" | mail ${site.email}`,
+  response: "← 200 OK · usually replies within a day",
   links: [
     { label: "Email", href: `mailto:${site.email}` },
     { label: "GitHub", href: site.github, external: true },
