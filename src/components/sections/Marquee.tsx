@@ -13,8 +13,8 @@ const EASE = 4; // how quickly speed settles back (higher = quicker)
 /**
  * Infinite strip.
  * - Desktop with motion: position is driven every frame from lenis.velocity.
- *   Base speed when idle, faster in the direction of the scroll, eased back
- *   with a lerp, capped. Paused while offscreen.
+ *   Base leftward speed when idle, faster (or reversed) with the scroll, eased
+ *   back with a lerp, capped. Paused while offscreen.
  * - Small screens with motion: constant-speed CSS loop.
  * - Reduced motion: static.
  */
@@ -30,7 +30,6 @@ export default function Marquee() {
 
     let x = 0;
     let speed = BASE;
-    let direction = 1; // 1 = leftwards (scrolling down), -1 = rightwards
     let visible = true;
     let loop = el.scrollWidth / COPIES; // width of one copy
 
@@ -47,9 +46,12 @@ export default function Marquee() {
       if (!visible || !loop) return;
       const dt = Math.min(deltaMs, 50) / 1000;
       const velocity = lenisRef.current?.velocity ?? 0;
-      if (Math.abs(velocity) > 0.5) direction = velocity > 0 ? 1 : -1;
-
-      const target = gsap.utils.clamp(-MAX, MAX, direction * BASE + velocity * BOOST);
+      // Idle target is always the base leftward speed; scrolling up pushes it
+      // rightwards only while the scroll lasts. (Step 7 kept the last scroll
+      // direction when idle:
+      //   if (Math.abs(velocity) > 0.5) direction = velocity > 0 ? 1 : -1;
+      //   target = clamp(direction * BASE + velocity * BOOST) )
+      const target = gsap.utils.clamp(-MAX, MAX, BASE + velocity * BOOST);
       speed += (target - speed) * (1 - Math.exp(-dt * EASE)); // lerp back
 
       x = (x - speed * dt) % loop;

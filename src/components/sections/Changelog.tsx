@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { experience } from "../../data/content";
 import { FULL_MOTION_QUERY } from "../../hooks/useMotionPrefs";
-import { gsap, useGSAP } from "../../lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "../../lib/gsap";
 import Chip from "../ui/Chip";
 import Reveal from "../ui/Reveal";
 import SectionHeading from "../ui/SectionHeading";
@@ -9,27 +9,39 @@ import SectionHeading from "../ui/SectionHeading";
 export default function Changelog() {
   const root = useRef<HTMLElement>(null);
 
-  // Desktop: rows arrive one by one like log lines when the section enters.
-  // Within a row: date, then title, then the body. Plays once.
-  // (Small screens get a per-row fade-up from <Reveal>; reduced motion gets
-  // the final state.)
+  // Desktop: each row arrives like a log line as it enters the viewport (its
+  // own trigger at "top 85%"). Within a row: date, then title, then the body.
+  // Rows that enter together (a jump, a fast scroll) are staggered 0.12 apart.
+  // Plays once. Small screens get a per-row fade-up from <Reveal>; reduced
+  // motion gets the final state.
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
       mm.add(FULL_MOTION_QUERY, () => {
         const rows = gsap.utils.toArray<HTMLElement>("[data-log-row]", root.current);
-        const tl = gsap.timeline({
-          scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
-        });
-        rows.forEach((row, i) => {
-          const parts = ["[data-log-date]", "[data-log-title]", "[data-log-body]"]
+        const partsOf = (row: Element) =>
+          ["[data-log-date]", "[data-log-title]", "[data-log-body]"]
             .map((sel) => row.querySelector(sel))
             .filter(Boolean);
-          tl.from(
-            parts,
-            { y: 16, autoAlpha: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 },
-            i * 0.12,
-          );
+
+        /* Step 7: one trigger for the whole section ("top 75%"), all rows on one
+           timeline at i * 0.12. Rows below the fold had finished before they
+           were seen. */
+        gsap.set(rows.flatMap(partsOf), { y: 16, autoAlpha: 0 });
+        ScrollTrigger.batch(rows, {
+          start: "top 85%",
+          once: true,
+          onEnter: (batch) =>
+            batch.forEach((row, i) =>
+              gsap.to(partsOf(row), {
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.08,
+                delay: i * 0.12,
+              }),
+            ),
         });
       });
     },

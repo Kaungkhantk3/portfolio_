@@ -294,6 +294,21 @@
     to { transform: translate3d(-25%, 0, 0); }
   }
 
+  /* Small-screen reveals (Reveal.tsx): fade up once when scrolled into view.
+     Classes are added by an IntersectionObserver; without it, or with reduced
+     motion, content is simply visible. */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-wait {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    .reveal-in {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+  }
+
   /* Font family helpers */
   .font-display { font-family: var(--font-display); }
   .font-body    { font-family: var(--font-body); }
