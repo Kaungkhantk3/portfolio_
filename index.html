@@ -2,9 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" />  (Vite default; the file never existed in public/) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pro_portfolio</title>
+    <meta name="theme-color" content="#0D0E0C" />
+    <meta
+      name="description"
+      content="Kaung Khant Kyaw, full-stack developer in Bangkok. Backend-first: REST APIs, auth and relational data, with the React front ends on top."
+    />
+    <link rel="canonical" href="https://portfolio-kaung-khant-kyaw.vercel.app/" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://portfolio-kaung-khant-kyaw.vercel.app/" />
+    <meta property="og:site_name" content="Kaung Khant Kyaw" />
+    <meta property="og:title" content="Kaung Khant Kyaw — Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="I build the layers users never see. Backend-first full-stack developer in Bangkok: REST APIs, auth, relational data, and the React front ends on top."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Kaung Khant Kyaw — Full-Stack Developer" />
+    <meta
+      name="twitter:description"
+      content="I build the layers users never see. Backend-first full-stack developer in Bangkok: REST APIs, auth, relational data, and the React front ends on top."
+    />
+    <!-- TODO(og:image): add a 1200x630 image to public/, then add
+         <meta property="og:image" ...> and <meta name="twitter:image" ...>
+         and switch twitter:card to "summary_large_image". -->
+
+    <!-- Heading + body fonts: fetched early, in parallel with the JS -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2"
+    />
+    <!-- Step 4 experiment (static Inter 400 preload), reverted before step 5:
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="/node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2" />
+    -->
+    <title>Kaung Khant Kyaw — Full-Stack Developer</title>
   </head>
   <body>
     <div id="root"></div>

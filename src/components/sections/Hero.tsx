@@ -1,5 +1,5 @@
 import { ArrowRight, Download, Mail } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import TechLogoGrid from "../ui/TechLogoGrid";
 
 // Earlier hero visuals preserved but unused — restore either by swapping the

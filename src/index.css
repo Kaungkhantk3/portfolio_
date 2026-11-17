@@ -1,18 +1,108 @@
+/* Pre-rebuild fonts (Syne / DM Sans via render-blocking Google @import), replaced
+   by self-hosted variable fonts below:
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+*/
+@import "@fontsource-variable/space-grotesk/wght.css";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 
 @import "tailwindcss";
+
+/* Step 4 experiment, reverted before step 5: static Inter 400 (latin) + variable
+   font for heavier weights. It did not improve LCP. Kept for the step 8
+   performance pass.
+
+─────────────────────────────────────────
+   Inter (latin only)
+   Weight 400 is a small static file, preloaded in index.html, because the
+   hero paragraph (the LCP element) is set in it. Heavier weights come from
+   the variable font, fetched only when something uses them.
+───────────────────────────────────────── 
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/inter/files/inter-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 401 900;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+*/
+
+/* ─────────────────────────────────────────
+   Metric-matched fallbacks
+   Arial resized to the web fonts' measured widths and vertical metrics, so
+   text occupies the same space before and after the web font swaps in.
+───────────────────────────────────────── */
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  font-weight: 100 599;
+  src: local('Arial'), local('ArialMT'), local('Roboto');
+  size-adjust: 107.07%;
+  ascent-override: 91.9%;
+  descent-override: 27.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold');
+  size-adjust: 100.24%;
+  ascent-override: 98.2%;
+  descent-override: 29.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  font-weight: 100 599;
+  src: local('Arial'), local('ArialMT'), local('Roboto');
+  size-adjust: 106.62%;
+  ascent-override: 90.86%;
+  descent-override: 22.62%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  font-weight: 600 900;
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold');
+  size-adjust: 101.41%;
+  ascent-override: 95.53%;
+  descent-override: 23.78%;
+  line-gap-override: 0%;
+}
 
 /* ─────────────────────────────────────────
    Design tokens  (replaces tailwind.config)
 ───────────────────────────────────────── */
 @theme {
   /* Fonts */
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
+  /* --font-display: 'Syne', sans-serif;      (pre-rebuild) */
+  /* --font-body:    'DM Sans', sans-serif;   (pre-rebuild) */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Brand colors */
+  /* Rebuild palette */
+  --color-bg:      #0D0E0C;
+  --color-surface: #16171A;
+  --color-plate:   #1C1D1A;
+  --color-line:    #262723;
+  --color-ink:     #ECE9E2;
+  --color-muted:   #9A978F;
+  --color-accent:  #FF6A2B;
+  --color-live:    #5BD66B;
+  --color-amber:   #E3B341;
+
+  /* Pre-rebuild brand colors (still referenced by the retired components) */
   --color-base:          #060612;
-  --color-accent:        #818cf8;
+  /* --color-accent:        #818cf8;  (pre-rebuild, replaced above) */
   --color-accent-bright: #a5b4fc;
   --color-accent-dim:    rgba(129, 140, 248, 0.15);
   --color-accent-purple: #c084fc;
@@ -53,16 +143,21 @@
    Base styles
 ───────────────────────────────────────── */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  /* html { scroll-behavior: smooth; }  (pre-rebuild; Lenis owns smooth scroll now) */
 
   body {
-    background-color: var(--color-base);
-    color: #e2e0f0;
+    /* background-color: var(--color-base); color: #e2e0f0;  (pre-rebuild) */
+    background-color: var(--color-bg);
+    color: var(--color-ink);
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -71,8 +166,8 @@
 
   ::-webkit-scrollbar             { width: 5px; }
   ::-webkit-scrollbar-track       { background: transparent; }
-  ::-webkit-scrollbar-thumb       { background: rgba(129, 140, 248, 0.25); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(129, 140, 248, 0.45); }
+  ::-webkit-scrollbar-thumb       { background: var(--color-line); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 }
 
 /* ─────────────────────────────────────────
@@ -176,6 +271,44 @@
     4%            { box-shadow: 0 0 14px rgba(129, 140, 248, 0.85); }
   }
 
+  /* Blinking terminal cursor (build logs) */
+  .cursor-blink {
+    animation: cursor-blink 1s steps(1) infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* Marquee at a constant speed (small screens). The track holds four copies
+     of the list, so shifting by one copy loops seamlessly. On desktop the
+     position is driven from scroll velocity in Marquee.tsx instead. */
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-loop {
+      animation: marquee-loop 28s linear infinite;
+    }
+  }
+
+  @keyframes marquee-loop {
+    to { transform: translate3d(-25%, 0, 0); }
+  }
+
+  /* Small-screen reveals (Reveal.tsx): fade up once when scrolled into view.
+     Classes are added by an IntersectionObserver; without it, or with reduced
+     motion, content is simply visible. */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-wait {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    .reveal-in {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+  }
+
   /* Font family helpers */
   .font-display { font-family: var(--font-display); }
   .font-body    { font-family: var(--font-body); }
@@ -224,9 +357,10 @@
   animation-delay: -14s;
 }
 
-/* ─────────────────────────────────────────
+/* Pre-rebuild noise grain overlay, retired:
+ ─────────────────────────────────────────
    Noise grain overlay
-───────────────────────────────────────── */
+───────────────────────────────────────── 
 body::after {
   content: '';
   position: fixed;
@@ -236,3 +370,4 @@ body::after {
   pointer-events: none;
   z-index: 1;
 }
+*/
