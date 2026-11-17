@@ -1,110 +1,133 @@
 # Kaung Khant Kyaw — Portfolio
 
-> Personal portfolio website showcasing my full-stack development projects, skills, and experience.
+A motion-driven, single-page portfolio for a backend-first full-stack developer, built with React, GSAP and React Three Fiber.
 
-[![Live Site](https://img.shields.io/badge/Live%20Site-portfolio--kaung--khant--kyaw.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://portfolio-kaung-khant-kyaw.vercel.app/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-latest-FF0055?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
-<img width="1429" height="691" alt="image" src="https://github.com/user-attachments/assets/93710b5e-28d4-463a-9637-a71cef75e7d4" />
+**Live:** https://portfolio-kaung-khant-kyaw.vercel.app/
 
----
+![Scrolling through the pinned 3D stack section](docs/preview/stack-pin-scroll.gif)
 
-## 🔗 Live Site
+## Highlights
 
-**[https://portfolio-kaung-khant-kyaw.vercel.app/](https://portfolio-kaung-khant-kyaw.vercel.app/)**
+- **Hero intro:** headline lines rise out of a mask and the stats count up once.
+- **3D stack, pinned scroll:** three WebGL plates (React Three Fiber) spread apart and slide left while each layer's skills come in beside it.
+- **Plate → card handoff:** between the two pinned sections, the top plate morphs into the first project card.
+- **Six-card project deck:** a pinned deck that snaps card to card, with a sliding index, an odometer counter, typed build logs, and a final 2 × 3 overview grid.
+- **Marquee:** an infinite strip whose speed and direction follow scroll velocity.
+- **Changelog and terminal reveals:** experience rows arrive like log lines as they enter the viewport, and the contact command types itself out.
 
----
+## Tech stack
 
-## ✨ Features
+| | Version |
+|---|---|
+| React / React DOM | 19.2.4 |
+| TypeScript | 5.9.3 |
+| Vite | 7.3.1 |
+| Tailwind CSS | 4.2.1 |
+| GSAP (ScrollTrigger, SplitText) | 3.15.1 |
+| @gsap/react | 2.1.2 |
+| Motion | 14.14.0 |
+| Lenis | 1.3.27 |
+| three.js | 0.184.0 |
+| React Three Fiber | 9.8.2 |
 
-- **Glassmorphism UI** — frosted glass cards, ambient gradient blobs, and subtle noise grain overlay
-- **Fully responsive** — mobile-first layout that works across all screen sizes
-- **Scroll-aware navbar** — active section highlighting and blur-on-scroll effect
-- **Framer Motion animations** — staggered entrance reveals and smooth transitions
-- **Skills grouped by category** — Frontend, Backend & Database, Tooling & DevOps
-- **Timeline experience section** — vertical connector with glowing dots
-- **Tailwind v4** — CSS-first configuration using `@theme` tokens, no config file needed
-- **Vercel Analytics** — page view tracking via `@vercel/analytics`
-- **GitHub CI/CD** — auto-deploys on every push to `main`
+Fonts are self-hosted: Space Grotesk (headings), Inter (body) and JetBrains Mono (labels).
 
----
+## How the motion is organised
 
-## 🗂 Sections
+Each library has one job, and no two of them animate the same element.
 
-| Section    | Description                                           |
-| ---------- | ----------------------------------------------------- |
-| Hero       | Introduction, availability status, and key stats      |
-| About      | Six focus areas as glassmorphism cards                |
-| Skills     | Tech stack grouped by category with brand icons       |
-| Projects   | Featured hero project, secondary cards, and more work |
-| Experience | Timeline of internship and teaching assistant roles   |
-| Contact    | Email, GitHub, and LinkedIn links                     |
+- **GSAP** runs the pinned and scrubbed timelines (the stack and the deck), the hero intro, the count-up, the changelog and the terminal typing. Everything is created inside `useGSAP()` so it cleans up on unmount and hot reload.
+- **Motion** handles only the pointer tilt on the active deck card and the hover lift on overview tiles, on an inner wrapper GSAP never touches.
+- **Lenis** provides smooth scrolling. It is driven by `gsap.ticker` and synced to ScrollTrigger.
 
----
+**Two paths, chosen with `gsap.matchMedia`:**
 
-## 🛠 Tech Stack
+- **Desktop** (at least 900px wide and 600px tall, motion allowed): pins, scrubbed timelines, WebGL plates, the handoff and the deck.
+- **Small screens and reduced motion:** nothing is pinned. The stack is shown already spread out with its skills beside each plate, and the projects are a plain vertical list. Small screens with motion get CSS fade-ups and a constant-speed marquee.
 
-| Layer      | Technology                      |
-| ---------- | ------------------------------- |
-| Framework  | React 18 + TypeScript           |
-| Styling    | Tailwind CSS v4                 |
-| Animations | Framer Motion                   |
-| Icons      | Lucide React + React Icons      |
-| Fonts      | Syne (display) + DM Sans (body) |
-| Deployment | Vercel (GitHub CI/CD)           |
-| Analytics  | Vercel Analytics                |
+**Lazy chunks, desktop only:** the 3D scene (three.js + React Three Fiber) and the project deck (with Motion) are separate chunks requested when the browser is idle. Small screens and reduced motion never download them.
 
----
+**SVG fallback:** the plates are first drawn as an SVG at the same size the canvas will occupy, so the swap causes no layout shift. If WebGL is unavailable the SVG stays, and it spreads through the pinned section the same way.
 
-## 🚀 Run Locally
+## Accessibility & performance
+
+- **Reduced motion:** no pins, no scrubbing, no smooth scroll, no WebGL. Every section is shown in its final state and in-page links jump instantly.
+- **Hidden cards are inert:** in the deck, only the active card can be focused or read by a screen reader. In the overview grid, every tile can.
+- **Keyboard:** Tab moves through the project index, then the active card's links. Enter on an index item scrolls to that card. Focus is always visibly outlined.
+- **Screen readers:** the odometer and the typed terminal line are decorative (`aria-hidden`); a live "Project 2 of 6" text and the full command text are provided instead.
+
+Lighthouse, measured against `vite preview`:
+
+| | Performance | Accessibility | Best practices | SEO |
+|---|---|---|---|---|
+| Mobile (three runs) | 96 | 100 | 100 | 100 |
+| Desktop | 100 | 100 | 100 | 100 |
+
+JavaScript, gzipped:
+
+| | Size |
+|---|---|
+| Main bundle | 137.24 kB |
+| 3D chunk (lazy, desktop only) | 181.05 kB |
+| Deck chunk (lazy, desktop only) | 37.14 kB |
+| Total on mobile | 137.24 kB |
+| Total on desktop | 355.43 kB |
+
+## Flags
+
+- `flags.enableFlipHandoff` in `src/data/content.ts` turns the plate → card handoff on or off. It is on by default.
+- `?handoff=0` or `?handoff=1` in the URL overrides it for one visit, which is useful for comparing the two versions.
+
+## Getting started
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/Kaungkhantk3/portfolio_.git
 cd portfolio_
-
-# 2. Install dependencies
 npm install
-
-# 3. Start the dev server
-npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | Run ESLint |
 
----
+CI runs on Node 20.
 
-## 📁 Project Structure
+## Project structure
 
 ```
 src/
 ├── components/
-│   ├── layout/
-│   │   ├── Navbar.tsx
-│   │   └── Footer.tsx
-│   ├── sections/
-│   │   ├── Hero.tsx
-│   │   ├── About.tsx
-│   │   ├── Skills.tsx
-│   │   ├── FeaturedProjects.tsx
-│   │   ├── Experience.tsx
-│   │   └── Contact.tsx
-│   └── ui/
-│       └── ProjectCard.tsx
-├── data/
-│   ├── projects.ts
-│   └── skills.ts
+│   ├── layout/      nav and footer
+│   ├── sections/    hero stage, marquee, stack, selected work, changelog, contact, handoff
+│   ├── three/       the WebGL plate scene
+│   ├── ui/          chips, headings, SVG plates, reveals
+│   └── work/        project cards and the pinned deck
+├── data/            content.ts (all copy)
+├── hooks/           motion preferences, idle detection
+├── lib/             GSAP setup, Lenis, anchors, shared scroll state
+├── providers/       smooth scroll
 ├── App.tsx
-└── index.css
-public/
-└── resume.pdf
+└── index.css        design tokens and utilities
 ```
 
----
+Components and data files from before the rebuild are still in the repo but are no longer rendered.
 
-## 📄 License
+## Editing content
 
-MIT © 2026 [Kaung Khant Kyaw](https://portfolio-kaung-khant-kyaw.vercel.app/)
+All copy lives in `src/data/content.ts`: navigation, hero text and stats, marquee items, stack layers, the six projects with their build logs, the changelog, contact details and the footer. Components read from that file and contain no text of their own.
+
+## Known issues
+
+- **`THREE.Clock` deprecation warning** in the browser console on desktop. It comes from React Three Fiber's internals, not from this code.
+- **Safari is untested** at the time of writing. All checks were run in Chrome.
+
+## Contact
+
+**Kaung Khant Kyaw**
+
+- Email: [kaungkhant.luke.dev@gmail.com](mailto:kaungkhant.luke.dev@gmail.com)
+- LinkedIn: https://www.linkedin.com/in/kaung-khant-kyaw-66064627b/
+- GitHub: https://github.com/Kaungkhantk3
